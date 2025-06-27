@@ -1,0 +1,12 @@
+{
+  "python.pythonPath": "backend/venv/bin/python",
+  "python.linting.enabled": true,
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "frontend/node_modules/typescript/lib",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "backend/venv": true,
+    "node_modules": true
+  }
+}

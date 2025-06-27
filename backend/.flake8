@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203
+select = B,C,E,F,W,T4,B9
+extend-select = BLK
+black-config = pyproject.toml

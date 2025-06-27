@@ -1,4 +1,8 @@
+djangorestframework
+django-cors-headers
 fastapi
+flake8 
+flake8-black
 uvicorn==0.22.0
 python-multipart==0.0.6
 pydicom==2.3.1

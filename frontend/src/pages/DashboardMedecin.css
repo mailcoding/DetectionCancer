@@ -1,0 +1,381 @@
+.dashboard-medecin {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffe0ef 0%, #f8bbd0 100%);
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  display: flex;
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+}
+
+.med-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff0f6;
+  padding: 1rem 5rem;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.med-logo {
+  font-size: 1.7rem;
+  font-weight: bold;
+  color: #e91e63;
+  letter-spacing: 1px;
+}
+
+.med-search {
+  position: relative;
+  width: 320px;
+}
+
+.med-search input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: 1.5px solid #f8bbd0;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  background: #fff;
+  transition: border 0.2s;
+}
+
+.med-search input:focus {
+  border: 1.5px solid #e91e63;
+}
+
+.typeahead-list {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #f8bbd0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+  z-index: 20;
+  max-height: 180px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.typeahead-list li {
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.typeahead-list li:hover {
+  background: #f8bbd0;
+}
+.typeahead-id {
+  color: #ad1457;
+  font-size: 0.95em;
+  margin-left: 0.5em;
+}
+
+.med-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.notif-icon {
+  position: relative;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.notif-badge {
+  position: absolute;
+  top: -7px;
+  right: -10px;
+  background: #e91e63;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  padding: 2px 7px;
+  font-weight: bold;
+}
+.notif-dropdown {
+  position: absolute;
+  right: 0;
+  top: 120%;
+  background: #fff;
+  border: 1px solid #f8bbd0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+  min-width: 260px;
+  z-index: 30;
+}
+.notif-item {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #f8bbd0;
+  font-size: 1rem;
+}
+.notif-item:last-child {
+  border-bottom: none;
+}
+
+.profile-menu {
+  position: relative;
+  outline: none;
+}
+.profile-label {
+  color: #e91e63;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  top: 120%;
+  background: #fff;
+  border: 1px solid #f8bbd0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+  min-width: 180px;
+  z-index: 30;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.profile-dropdown li {
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  color: #ad1457;
+  font-size: 1rem;
+  border-bottom: 1px solid #f8bbd0;
+  transition: background 0.15s;
+}
+.profile-dropdown li:hover {
+  background: #f8bbd0;
+}
+.profile-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.med-main {
+  padding: 2rem 2vw;
+}
+.welcome-block {
+  background: #fff0f6;
+  border-radius: 12px;
+  padding: 3rem 3rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+}
+.patient-info {
+  background: #fff;
+  border-radius: 12px;
+  padding: 3rem 3rem;
+  max-width: 1400px;
+  margin: 2rem auto;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+}
+
+.med-sidebar {
+  width: 230px;
+  background: #fff0f6;
+  box-shadow: 2px 0 8px rgba(233, 30, 99, 0.08);
+  padding: 2.5rem 1.2rem 2rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.med-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.med-sidebar li {
+  font-size: 1.13rem;
+  color: #ad1457;
+  font-weight: 500;
+  padding: 1rem 0.7rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 0.2rem;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.med-sidebar li.active, .sidebar-submenu li.active {
+  background: #f8bbd0;
+  color: #e91e63;
+}
+.med-sidebar li:hover, .sidebar-submenu li:hover {
+  background: #ffe0ef;
+  color: #e91e63;
+}
+.sidebar-icon {
+  margin-right: 0.7em;
+  font-size: 1.25em;
+  display: inline-block;
+  width: 1.5em;
+  text-align: center;
+}
+.sidebar-biblio-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  cursor: pointer;
+}
+.sidebar-arrow {
+  margin-left: 0.7em;
+  font-size: 0.95em;
+  color: #ad1457;
+}
+.sidebar-submenu {
+  margin-top: 0.5rem;
+  margin-left: 1.2rem;
+  font-size: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+  padding: 0.2rem 0;
+  position: relative;
+  z-index: 2;
+}
+.sidebar-submenu li {
+  padding: 0.4rem 0.7rem;
+  color: #ad1457;
+  border-radius: 6px;
+  font-weight: 400;
+  margin-bottom: 0.1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.sidebar-submenu li.active {
+  background: #f8bbd0;
+  color: #e91e63;
+}
+.sidebar-submenu li:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar-profile-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0 1.5rem 0;
+  border-bottom: 1px solid #f3e6ee;
+}
+.sidebar-avatar {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+.sidebar-username {
+  font-weight: 600;
+  color: #e91e63;
+  font-size: 1.1rem;
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 2rem 1rem 1.5rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.med-main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.custom-btn {
+  background: linear-gradient(90deg, #1976d2 0%, #64b5f6 100%);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 0.7em 2em;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  outline: none;
+  margin-top: 1em;
+}
+.custom-btn:hover, .custom-btn:focus {
+  background: linear-gradient(90deg, #1565c0 0%, #42a5f5 100%);
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.22);
+  transform: translateY(-2px) scale(1.03);
+}
+.custom-btn:active {
+  background: linear-gradient(90deg, #0d47a1 0%, #1976d2 100%);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+  transform: scale(0.98);
+}
+
+@media (max-width: 900px) {
+  .dashboard-medecin {
+    flex-direction: column;
+  }
+  .med-sidebar {
+    flex-direction: row;
+    width: 100vw;
+    min-height: unset;
+    padding: 0.7rem 0.2rem 0.7rem 0.2rem;
+    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .med-sidebar ul {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    justify-content: space-between;
+  }
+  .med-sidebar li {
+    min-width: 120px;
+    font-size: 1rem;
+    padding: 0.7rem 0.5rem;
+    margin-bottom: 0;
+    margin-right: 0.2rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .sidebar-submenu {
+    position: absolute;
+    left: 0;
+    top: 110%;
+    min-width: 140px;
+    margin-left: 0;
+    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.18);
+  }
+}
+
+@media (max-width: 600px) {
+  .med-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.7rem 0.5rem;
+    gap: 0.7rem;
+  }
+  .med-logo {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  .med-search {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .med-main {
+    padding: 1rem 0.2rem;
+  }
+  .welcome-block, .patient-info {
+    padding: 1rem 0.5rem;
+    max-width: 100vw;
+  }
+}
