@@ -12,6 +12,8 @@ const ImageUploader: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [fileType, setFileType] = useState<string | null>(null);
+    const [isDragActive, setIsDragActive] = useState(false);
+    const [message, setMessage] = useState<string | null>(null);
     const dropRef = useRef<HTMLDivElement>(null);
 
     const handleFile = (selectedFile: File | null) => {
@@ -41,6 +43,7 @@ const ImageUploader: React.FC = () => {
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
+        setIsDragActive(false);
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             handleFile(e.dataTransfer.files[0]);
         }
@@ -49,12 +52,20 @@ const ImageUploader: React.FC = () => {
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
+        setIsDragActive(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragActive(false);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!file) return;
         setIsLoading(true);
+        setMessage(null);
         const formData = new FormData();
         formData.append('image', file);
         try {
@@ -67,7 +78,9 @@ const ImageUploader: React.FC = () => {
             if (!response.ok) throw new Error(await response.text());
             const data = await response.json();
             setResult(data.result as AnalysisResult);
+            setMessage('Analyse réussie !');
         } catch (error) {
+            setMessage('Erreur lors de l’analyse.');
             console.error('Error:', error);
         } finally {
             setIsLoading(false);
@@ -79,7 +92,8 @@ const ImageUploader: React.FC = () => {
             ref={dropRef}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
-            className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors"
+            onDragLeave={handleDragLeave}
+            className={`max-w-md mx-auto p-6 bg-white rounded-lg shadow-md border-2 border-dashed transition-colors ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'}`}
             style={{ minHeight: 220 }}
         >
             <form onSubmit={handleSubmit}>
@@ -115,9 +129,13 @@ const ImageUploader: React.FC = () => {
                     className="custom-btn w-full"
                     disabled={isLoading || !file}
                 >
+                    {isLoading ? <span className="loader mr-2"></span> : null}
                     {isLoading ? 'Analyse en cours...' : 'Analyser'}
                 </button>
             </form>
+            {message && (
+                <div className={`mt-4 p-2 rounded text-center ${message.includes('réussie') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{message}</div>
+            )}
             {result && (
                 <div className="mt-4 p-4 bg-gray-100 rounded">
                     <div className="font-bold mb-2">Résultat IA :</div>
