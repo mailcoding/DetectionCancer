@@ -1,0 +1,32 @@
+# Roadmap Fonctionnelle – Dashboard Médical IA
+
+## 1. Upload et gestion des fichiers
+- [ ] Ajouter le support de l’upload PDF (biopsies)
+- [ ] Améliorer l’upload : drag & drop, multi-fichiers
+- [ ] Historique des examens : filtrage, tri, recherche
+- [ ] Prévisualisation avancée DICOM : outils d’annotation enrichis
+
+## 2. Analyse et Prédictions IA
+- [ ] Intégrer le module IA (API prédiction)
+- [ ] Afficher le score BI-RADS et l’indicateur de confiance
+- [ ] Afficher les cartes thermiques (heatmaps) sur l’image
+- [ ] Comparaison temporelle (superposition, suivi lésion)
+- [ ] Afficher les explications techniques (facteurs, métriques)
+
+## 3. Visualisation et outils
+- [ ] Multi-onglets pour comparaison d’examens
+- [ ] Affichage expert (données brutes DICOM)
+- [ ] Export des annotations en PDF
+- [ ] Visualisation 3D (si données disponibles)
+
+## 4. Collaboration et suivi patient
+- [ ] Module de commentaires/collaboration entre professionnels
+- [ ] Suivi patient enrichi (timeline, notifications)
+
+## 5. Sécurité et expérience utilisateur
+- [ ] Améliorer la gestion des erreurs et l’UX (feedback, loading, etc.)
+- [ ] Finaliser la gestion des rôles et des accès
+
+---
+
+Ce fichier sert de référentiel pour le suivi des développements à venir. À mettre à jour à chaque étape franchie.
