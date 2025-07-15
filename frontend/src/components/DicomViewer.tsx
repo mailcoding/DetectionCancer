@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { RenderingEngine, Enums, imageLoader } from '@cornerstonejs/core';
+import { RenderingEngine, Enums, imageLoader, init } from '@cornerstonejs/core';
+import dicomImageLoader from '@cornerstonejs/dicom-image-loader';
 import { PanTool, ZoomTool, WindowLevelTool, LengthTool, ToolGroupManager, Enums as ToolEnums, ArrowAnnotateTool } from '@cornerstonejs/tools';
 
 const DicomViewer: React.FC<{ imageUrl: string }> = ({ imageUrl }) => {
@@ -11,11 +12,10 @@ const DicomViewer: React.FC<{ imageUrl: string }> = ({ imageUrl }) => {
   useEffect(() => {
     if (!elementRef.current || !imageUrl) return;
 
-    // Enregistrement du loader wadouri et dicomParser (une seule fois)
-    if (!(window as any).__wadouri_loader_registered) {
-      // Injection de dicomParser n'est plus nécessaire avec cornerstonejs/core v3+
-      (window as any).__wadouri_loader_registered = true;
-    }
+    // Initialisation CornerstoneJS (obligatoire avant tout RenderingEngine)
+    init();
+    // Initialisation du loader DICOM (wadouri)
+    dicomImageLoader.init();
 
     // Création du moteur de rendu et du viewport
     const renderingEngine = new RenderingEngine(renderingEngineId);
