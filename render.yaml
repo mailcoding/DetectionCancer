@@ -11,6 +11,8 @@ services:
       python backend/manage.py collectstatic --noinput
     startCommand: gunicorn core.wsgi:application --chdir backend --bind 0.0.0.0:10000
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
       - key: SECRET_KEY
         sync: false
       - key: DEBUG
