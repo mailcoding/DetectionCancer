@@ -1,5 +1,10 @@
+Django>=5.2
+python-dotenv
 djangorestframework
 django-cors-headers
+django-oauth-toolkit
+gunicorn
+psycopg2-binary
 fastapi
 flake8 
 flake8-black
