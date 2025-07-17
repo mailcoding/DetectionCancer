@@ -24,3 +24,9 @@ class MedicalImage(models.Model):
 
     def __str__(self):
         return f"Image {self.id}"
+
+class BiopsyReport(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='biopsies/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    # Optionnel : lien vers un patient, un examen, etc.

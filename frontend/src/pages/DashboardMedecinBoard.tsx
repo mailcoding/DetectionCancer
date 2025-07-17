@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../api';
 import './DashboardMedecinBoard.css';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import BiopsyUploader from '../components/BiopsyUploader';
 
 interface MedicalImage {
   id: number;
@@ -109,6 +110,10 @@ const DashboardMedecinBoard: React.FC = () => {
             <ul>
               <li>À relier à un modèle de rappels</li>
             </ul>
+          </div>
+          <div className="quick-list">
+            <h4>Upload de biopsie (PDF)</h4>
+            <BiopsyUploader />
           </div>
         </div>
       </div>
