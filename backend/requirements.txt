@@ -1,5 +1,6 @@
 setuptools
 Django>=5.2,<6.0
+wheel
 python-dotenv
 djangorestframework
 django-cors-headers
