@@ -34,7 +34,8 @@ const NouvelExamen: React.FC = () => {
     const formData = new FormData();
     formData.append('image', file);
     try {
-      const response = await axios.post('http://localhost:8000/detection/analyze/', formData, {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      const response = await axios.post(`${apiUrl}/detection/analyze/`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setIaResult((response.data as { result: any }).result);

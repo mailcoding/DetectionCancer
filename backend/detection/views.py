@@ -11,13 +11,39 @@ class ImageAnalysisView(APIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
-        serializer = MedicalImageSerializer(data=request.data)
-        if serializer.is_valid():
-            # Simulation d'analyse IA
-            instance = serializer.save(analysis_result={
+        file_obj = request.FILES.get('image')
+        if not file_obj:
+            return Response({'error': 'Aucun fichier reçu.'}, status=400)
+
+        # Détection du type de fichier
+        content_type = file_obj.content_type
+        filename = file_obj.name.lower()
+        result = {}
+        if content_type == 'application/dicom' or filename.endswith('.dcm'):
+            # Simulation analyse DICOM
+            result = {
                 'malignancy_score': 0.85,
-                'findings': ['Masse suspecte détectée']
-            })
+                'findings': ['Masse suspecte détectée', 'DICOM analysé']
+            }
+        elif content_type == 'image/jpeg' or filename.endswith('.jpg') or filename.endswith('.jpeg'):
+            # Simulation analyse JPEG
+            result = {
+                'malignancy_score': 0.15,
+                'findings': ['Image JPEG analysée', 'Pas de masse suspecte']
+            }
+        elif content_type == 'application/pdf' or filename.endswith('.pdf'):
+            # Simulation analyse PDF
+            result = {
+                'malignancy_score': 0.5,
+                'findings': ['PDF reçu', 'Analyse textuelle possible']
+            }
+        else:
+            return Response({'error': 'Format de fichier non supporté.'}, status=400)
+
+        # Sauvegarde en base (optionnel, ici on simule)
+        serializer = MedicalImageSerializer(data={'image': file_obj, 'analysis_result': result})
+        if serializer.is_valid():
+            instance = serializer.save()
             return Response({
                 'result': instance.analysis_result,
                 'id': instance.id,

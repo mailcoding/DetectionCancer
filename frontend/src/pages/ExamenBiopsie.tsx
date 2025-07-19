@@ -17,7 +17,7 @@ const ExamenBiopsie: React.FC = () => {
   const [biopsies, setBiopsies] = useState<Biopsie[]>([]);
   const [patients, setPatients] = useState<string[]>([]);
   const fileInput = useRef<HTMLInputElement>(null);
-  const API_URL = 'http://localhost:8000'; // à adapter si besoin
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
     apiFetch<Biopsie>('/detection/biopsie/')
