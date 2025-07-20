@@ -45,11 +45,15 @@ const NouvelExamen: React.FC = () => {
       const response = await axios.post(`${apiUrl}/detection/analyze/`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setIaResult((response.data as { result: any }).result);
+      setIaResult(response.data);
       setFile(null);
       setPreviewUrl(null);
-    } catch (err) {
-      setIaResult({ error: "Erreur lors de l'analyse IA." });
+    } catch (err: any) {
+      if (err.response && err.response.data && err.response.data.error) {
+        setIaResult({ error: err.response.data.error });
+      } else {
+        setIaResult({ error: "Erreur inconnue lors de l'analyse." });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -135,7 +139,7 @@ const NouvelExamen: React.FC = () => {
                 <h4>Prédiction IA</h4>
                 {iaResult ? (
                   iaResult.error ? (
-                    <p style={{color:'#e91e63'}}>{iaResult.error}</p>
+                    <p className="ia-error">{iaResult.error}</p>
                   ) : (
                     <div className="ia-result-block">
                       <div className="ia-header">
@@ -147,40 +151,16 @@ const NouvelExamen: React.FC = () => {
                           {iaResult.format === 'PDF' && '📄'}
                           {iaResult.format === 'BMP' && '🖼️'}
                           {iaResult.format === 'GIF' && '🖼️'}
-                          {!iaResult.format && '📁'}
                         </span>
-                        <span className="ia-format-name">{iaResult.format || 'Format inconnu'}</span>
-                        <span className="ia-status" style={{color: iaResult.malignancy_score >= 0.5 ? '#e91e63' : '#4caf50'}}>
-                          {iaResult.malignancy_score >= 0.5 ? '⚠️ Présence de cancer du sein détectée' : '✅ Aucun signe de cancer détecté'}
-                        </span>
+                        <span className="ia-score">Score : {(iaResult.score * 100).toFixed(1)}%</span>
                       </div>
-                      <div className="malignancy-bar">
-                        <span>Score de malignité :</span>
-                        <div className="bar-bg">
-                          <div className="bar-fill" style={{width: `${(iaResult.malignancy_score*100).toFixed(1)}%`, background: iaResult.malignancy_score >= 0.5 ? '#e91e63' : '#4caf50'}}></div>
-                        </div>
-                        <span className="bar-value">{(iaResult.malignancy_score * 100).toFixed(1)}%</span>
-                      </div>
-                      <p>
-                        <b>Type :</b> {iaResult.findings?.some((f:string) => f.toLowerCase().includes('malin')) ? 'Maligne' : iaResult.findings?.some((f:string) => f.toLowerCase().includes('benin')) ? 'Bénigne' : 'Indéterminé'}
-                      </p>
-                      <ul className="ia-findings">
-                        {iaResult.findings?.map((f:string, i:number) => <li key={i}>{f}</li>)}
-                      </ul>
-                      {iaResult.advice && (
-                        <div className="ia-advice">
-                          <b>Conseil :</b> {iaResult.advice}
-                        </div>
-                      )}
-                      {iaResult.interpretation && (
-                        <div className="ia-interpretation">
-                          <b>Interprétation :</b> {iaResult.interpretation}
-                        </div>
-                      )}
+                      <div className="ia-findings">{iaResult.findings}</div>
+                      <div className="ia-advice">{iaResult.advice}</div>
+                      <div className="ia-interpretation">{iaResult.interpretation}</div>
                     </div>
                   )
                 ) : (
-                  <p className="ia-placeholder">Aucun résultat IA pour l’instant.</p>
+                  <p>Aucun résultat IA pour le moment.</p>
                 )}
                 <button className="custom-btn" onClick={() => setShowModal(true)} disabled={!iaResult}>
                   🔍 Voir explications IA

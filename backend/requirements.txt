@@ -1,3 +1,4 @@
+python-magic
 setuptools
 Django>=5.2,<6.0
 wheel
