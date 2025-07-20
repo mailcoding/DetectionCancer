@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@cornerstonejs/core": "^0.3.0",
+    "@cornerstonejs/core": "^0.1.4",
     "@cornerstonejs/dicom-image-loader": "^0.1.5",
     "@cornerstonejs/tools": "^0.5.0",
     "@testing-library/dom": "^10.4.0",
