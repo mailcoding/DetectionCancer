@@ -34,45 +34,70 @@ class ImageAnalysisView(APIView):
         if ext:
             format_name = EXT_MAP[ext]
             # Simulation IA selon format
+            # Retour détaillé selon format
             if format_name == 'DICOM':
                 result = {
                     'malignancy_score': 0.85,
-                    'findings': ['Masse suspecte détectée', 'DICOM analysé']
+                    'findings': ['Masse suspecte détectée', 'DICOM analysé'],
+                    'format': 'DICOM',
+                    'advice': 'Demandez une confirmation histologique.',
+                    'interpretation': 'La masse détectée présente des caractéristiques typiques du cancer du sein. Un avis spécialisé est recommandé.'
                 }
             elif format_name == 'JPEG':
                 result = {
                     'malignancy_score': 0.15,
-                    'findings': ['Image JPEG analysée', 'Pas de masse suspecte']
+                    'findings': ['Image JPEG analysée', 'Pas de masse suspecte'],
+                    'format': 'JPEG',
+                    'advice': 'Image non médicale, résultat à confirmer par DICOM.',
+                    'interpretation': 'Aucune anomalie détectée sur cette image JPEG.'
                 }
             elif format_name == 'PNG':
                 result = {
                     'malignancy_score': 0.20,
-                    'findings': ['Image PNG analysée', 'Pas de masse suspecte']
+                    'findings': ['Image PNG analysée', 'Pas de masse suspecte'],
+                    'format': 'PNG',
+                    'advice': 'Image non médicale, résultat à confirmer par DICOM.',
+                    'interpretation': 'Aucune anomalie détectée sur cette image PNG.'
                 }
             elif format_name == 'TIFF':
                 result = {
                     'malignancy_score': 0.25,
-                    'findings': ['Image TIFF analysée', 'Pas de masse suspecte']
+                    'findings': ['Image TIFF analysée', 'Pas de masse suspecte'],
+                    'format': 'TIFF',
+                    'advice': 'Image non médicale, résultat à confirmer par DICOM.',
+                    'interpretation': 'Aucune anomalie détectée sur cette image TIFF.'
                 }
             elif format_name == 'BMP':
                 result = {
                     'malignancy_score': 0.18,
-                    'findings': ['Image BMP analysée', 'Pas de masse suspecte']
+                    'findings': ['Image BMP analysée', 'Pas de masse suspecte'],
+                    'format': 'BMP',
+                    'advice': 'Image non médicale, résultat à confirmer par DICOM.',
+                    'interpretation': 'Aucune anomalie détectée sur cette image BMP.'
                 }
             elif format_name == 'GIF':
                 result = {
                     'malignancy_score': 0.10,
-                    'findings': ['Image GIF analysée', 'Pas de masse suspecte']
+                    'findings': ['Image GIF analysée', 'Pas de masse suspecte'],
+                    'format': 'GIF',
+                    'advice': 'Image non médicale, résultat à confirmer par DICOM.',
+                    'interpretation': 'Aucune anomalie détectée sur cette image GIF.'
                 }
             elif format_name == 'PDF':
                 result = {
                     'malignancy_score': 0.5,
-                    'findings': ['PDF reçu', 'Analyse textuelle possible']
+                    'findings': ['PDF reçu', 'Analyse textuelle possible'],
+                    'format': 'PDF',
+                    'advice': 'Vérifiez le rapport médical joint.',
+                    'interpretation': 'Le PDF contient des informations textuelles à analyser.'
                 }
             else:
                 result = {
                     'malignancy_score': 0.0,
-                    'findings': [f'Format {format_name} analysé']
+                    'findings': [f'Format {format_name} analysé'],
+                    'format': format_name,
+                    'advice': 'Format non médical, résultat non interprétable.',
+                    'interpretation': 'Aucune analyse possible sur ce format.'
                 }
         else:
             return Response({'error': 'Format de fichier non supporté.'}, status=400)

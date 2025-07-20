@@ -138,22 +138,45 @@ const NouvelExamen: React.FC = () => {
                     <p style={{color:'#e91e63'}}>{iaResult.error}</p>
                   ) : (
                     <div className="ia-result-block">
-                      <p>
-                        <b>{iaResult.malignancy_score >= 0.5 ? '⚠️ Présence de cancer du sein détectée' : '✅ Aucun signe de cancer détecté'}</b>
-                      </p>
-                      <p>
-                        Type : <b>{iaResult.findings?.some((f:string) => f.toLowerCase().includes('malin')) ? 'Maligne' : iaResult.findings?.some((f:string) => f.toLowerCase().includes('benin')) ? 'Bénigne' : 'Indéterminé'}</b>
-                      </p>
-                      <div className="malignancy-bar">
-                        <span>Score de malignité :</span>
-                        <div className="bar-bg">
-                          <div className="bar-fill" style={{width: `${(iaResult.malignancy_score*100).toFixed(1)}%`, background: iaResult.malignancy_score >= 0.5 ? '#e91e63' : '#4caf50'}}></div>
-                        </div>
-                        <span className="bar-value">{(iaResult.malignancy_score * 100).toFixed(1)}%</span>
+                      <div className="ia-header" style={{display:'flex',alignItems:'center',gap:'1em'}}>
+                        <span style={{fontSize:'2em'}}>
+                          {iaResult.format === 'DICOM' && '🩻'}
+                          {iaResult.format === 'JPEG' && '🖼️'}
+                          {iaResult.format === 'PNG' && '🖼️'}
+                          {iaResult.format === 'TIFF' && '🖼️'}
+                          {iaResult.format === 'PDF' && '📄'}
+                          {iaResult.format === 'BMP' && '🖼️'}
+                          {iaResult.format === 'GIF' && '🖼️'}
+                          {!iaResult.format && '📁'}
+                        </span>
+                        <span style={{fontWeight:'bold',fontSize:'1.2em'}}>{iaResult.format || 'Format inconnu'}</span>
+                        <span style={{color: iaResult.malignancy_score >= 0.5 ? '#e91e63' : '#4caf50', fontWeight:'bold'}}>
+                          {iaResult.malignancy_score >= 0.5 ? '⚠️ Présence de cancer du sein détectée' : '✅ Aucun signe de cancer détecté'}
+                        </span>
                       </div>
-                      <ul className="ia-findings">
+                      <div className="malignancy-bar" style={{margin:'1em 0'}}>
+                        <span>Score de malignité :</span>
+                        <div className="bar-bg" style={{height:'16px',borderRadius:'8px',background:'#eee',overflow:'hidden'}}>
+                          <div className="bar-fill" style={{width: `${(iaResult.malignancy_score*100).toFixed(1)}%`, background: iaResult.malignancy_score >= 0.5 ? '#e91e63' : '#4caf50', height:'16px',borderRadius:'8px'}}></div>
+                        </div>
+                        <span className="bar-value" style={{marginLeft:'1em',fontWeight:'bold'}}>{(iaResult.malignancy_score * 100).toFixed(1)}%</span>
+                      </div>
+                      <p style={{margin:'0.5em 0'}}>
+                        <b>Type :</b> {iaResult.findings?.some((f:string) => f.toLowerCase().includes('malin')) ? 'Maligne' : iaResult.findings?.some((f:string) => f.toLowerCase().includes('benin')) ? 'Bénigne' : 'Indéterminé'}
+                      </p>
+                      <ul className="ia-findings" style={{margin:'0.5em 0 1em 0',paddingLeft:'1em'}}>
                         {iaResult.findings?.map((f:string, i:number) => <li key={i}>{f}</li>)}
                       </ul>
+                      {iaResult.advice && (
+                        <div className="ia-advice" style={{background:'#f5f5f5',padding:'0.5em 1em',borderRadius:'6px',margin:'0.5em 0'}}>
+                          <b>Conseil :</b> {iaResult.advice}
+                        </div>
+                      )}
+                      {iaResult.interpretation && (
+                        <div className="ia-interpretation" style={{background:'#e3f2fd',padding:'0.5em 1em',borderRadius:'6px',margin:'0.5em 0'}}>
+                          <b>Interprétation :</b> {iaResult.interpretation}
+                        </div>
+                      )}
                     </div>
                   )
                 ) : (
