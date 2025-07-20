@@ -19,24 +19,61 @@ class ImageAnalysisView(APIView):
         content_type = file_obj.content_type
         filename = file_obj.name.lower()
         result = {}
-        if content_type == 'application/dicom' or filename.endswith('.dcm'):
-            # Simulation analyse DICOM
-            result = {
-                'malignancy_score': 0.85,
-                'findings': ['Masse suspecte détectée', 'DICOM analysé']
-            }
-        elif content_type == 'image/jpeg' or filename.endswith('.jpg') or filename.endswith('.jpeg'):
-            # Simulation analyse JPEG
-            result = {
-                'malignancy_score': 0.15,
-                'findings': ['Image JPEG analysée', 'Pas de masse suspecte']
-            }
-        elif content_type == 'application/pdf' or filename.endswith('.pdf'):
-            # Simulation analyse PDF
-            result = {
-                'malignancy_score': 0.5,
-                'findings': ['PDF reçu', 'Analyse textuelle possible']
-            }
+        # Liste des formats supportés
+        EXT_MAP = {
+            '.dcm': 'DICOM',
+            '.jpg': 'JPEG', '.jpeg': 'JPEG',
+            '.png': 'PNG',
+            '.tif': 'TIFF', '.tiff': 'TIFF',
+            '.bmp': 'BMP',
+            '.gif': 'GIF',
+            '.pdf': 'PDF',
+        }
+        # Détection par extension
+        ext = next((e for e in EXT_MAP if filename.endswith(e)), None)
+        if ext:
+            format_name = EXT_MAP[ext]
+            # Simulation IA selon format
+            if format_name == 'DICOM':
+                result = {
+                    'malignancy_score': 0.85,
+                    'findings': ['Masse suspecte détectée', 'DICOM analysé']
+                }
+            elif format_name == 'JPEG':
+                result = {
+                    'malignancy_score': 0.15,
+                    'findings': ['Image JPEG analysée', 'Pas de masse suspecte']
+                }
+            elif format_name == 'PNG':
+                result = {
+                    'malignancy_score': 0.20,
+                    'findings': ['Image PNG analysée', 'Pas de masse suspecte']
+                }
+            elif format_name == 'TIFF':
+                result = {
+                    'malignancy_score': 0.25,
+                    'findings': ['Image TIFF analysée', 'Pas de masse suspecte']
+                }
+            elif format_name == 'BMP':
+                result = {
+                    'malignancy_score': 0.18,
+                    'findings': ['Image BMP analysée', 'Pas de masse suspecte']
+                }
+            elif format_name == 'GIF':
+                result = {
+                    'malignancy_score': 0.10,
+                    'findings': ['Image GIF analysée', 'Pas de masse suspecte']
+                }
+            elif format_name == 'PDF':
+                result = {
+                    'malignancy_score': 0.5,
+                    'findings': ['PDF reçu', 'Analyse textuelle possible']
+                }
+            else:
+                result = {
+                    'malignancy_score': 0.0,
+                    'findings': [f'Format {format_name} analysé']
+                }
         else:
             return Response({'error': 'Format de fichier non supporté.'}, status=400)
 

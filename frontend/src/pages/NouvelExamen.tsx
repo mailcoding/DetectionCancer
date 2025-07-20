@@ -15,15 +15,22 @@ const NouvelExamen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [iaResult, setIaResult] = useState<any>(null);
 
+  const [fileType, setFileType] = useState<string | null>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
     setFile(selectedFile);
     setIaResult(null);
-    if (selectedFile && selectedFile.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreviewUrl(reader.result as string);
-      reader.readAsDataURL(selectedFile);
+    if (selectedFile) {
+      setFileType(selectedFile.type);
+      if (selectedFile.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onloadend = () => setPreviewUrl(reader.result as string);
+        reader.readAsDataURL(selectedFile);
+      } else {
+        setPreviewUrl(null);
+      }
     } else {
+      setFileType(null);
       setPreviewUrl(null);
     }
   };
@@ -81,7 +88,21 @@ const NouvelExamen: React.FC = () => {
               </button>
             </div>
           </div>
-          <DicomViewer imageUrl={previewUrl || ''} />
+          {/* Affichage conditionnel selon le type de fichier */}
+          {file && (file.name.endsWith('.dcm') || fileType === 'application/dicom') && (
+            <DicomViewer imageUrl={previewUrl || ''} />
+          )}
+          {file && (fileType?.startsWith('image/jpeg') || file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')) && previewUrl && (
+            <div className="jpeg-preview">
+              <img src={previewUrl} alt="Aperçu JPEG" />
+              <p>Image JPEG chargée</p>
+            </div>
+          )}
+          {file && (fileType === 'application/pdf' || file.name.endsWith('.pdf')) && (
+            <div className="pdf-preview">
+              <p>Fichier PDF chargé : {file.name}</p>
+            </div>
+          )}
           <div className="main-content">
             <div className="left-col">
               <div className="dicom-tools">
