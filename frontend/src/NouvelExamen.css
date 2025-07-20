@@ -1,0 +1,93 @@
+.nouvel-examen-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1em;
+}
+.main-content {
+  display: flex;
+  gap: 2em;
+}
+.left-col, .right-col {
+  flex: 1;
+}
+@media (max-width: 900px) {
+  .main-content {
+    flex-direction: column;
+    gap: 1em;
+  }
+  .left-col, .right-col {
+    width: 100%;
+    flex: unset;
+  }
+}
+.ia-result-block {
+  word-break: break-word;
+}
+.ia-header {
+  flex-wrap: wrap;
+}
+.bar-value {
+  font-size: 1em;
+}
+.ia-findings li {
+  font-size: 0.95em;
+}
+.ia-advice, .ia-interpretation {
+  font-size: 0.98em;
+}
+.ia-result-block {
+  margin: 1em 0;
+  padding: 1em;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.ia-header {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+.ia-header .ia-format {
+  font-size: 2em;
+}
+.ia-header .ia-format-name {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+.ia-header .ia-status {
+  font-weight: bold;
+}
+.malignancy-bar {
+  margin: 1em 0;
+}
+.bar-bg {
+  height: 16px;
+  border-radius: 8px;
+  background: #eee;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 16px;
+  border-radius: 8px;
+  transition: width 0.3s;
+}
+.bar-value {
+  margin-left: 1em;
+  font-weight: bold;
+}
+.ia-findings {
+  margin: 0.5em 0 1em 0;
+  padding-left: 1em;
+}
+.ia-advice {
+  background: #f5f5f5;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  margin: 0.5em 0;
+}
+.ia-interpretation {
+  background: #e3f2fd;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  margin: 0.5em 0;
+}
