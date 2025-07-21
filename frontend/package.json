@@ -51,7 +51,6 @@
   "devDependencies": {
     "@craco/craco": "^5.9.0",
     "@types/axios": "^0.9.36",
-    "eslint-loader": "^4.0.2",
     "serve": "^14.2.4",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
