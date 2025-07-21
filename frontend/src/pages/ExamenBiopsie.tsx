@@ -61,6 +61,9 @@ const ExamenBiopsie: React.FC = () => {
 
   return (
     <div className="nouvel-examen-container">
+      <div className="tabs">
+        <div className="tab active">🔬 Biopsie</div>
+      </div>
       <div className="main-content">
         <div className="left-col">
           <div className="dicom-tools">
@@ -76,11 +79,17 @@ const ExamenBiopsie: React.FC = () => {
                 ref={fileInput}
                 title="Sélectionner un fichier PDF"
               />
-              <button className="custom-btn" type="submit">Ajouter résultat (PDF)</button>
+              <button className="custom-btn" type="submit">{loading ? <span className="loader"></span> : 'Analyser'}</button>
             </form>
             {error && <div className="biopsie-error">{error}</div>}
             {biopsie?.rapport_url && (
               <a className="custom-btn" href={biopsie.rapport_url} target="_blank" rel="noopener noreferrer">Télécharger rapport</a>
+            )}
+            {/* Preview PDF */}
+            {fileInput.current?.files?.[0] && (
+              <div className="pdf-preview">
+                <p>Fichier PDF chargé : {fileInput.current.files[0].name}</p>
+              </div>
             )}
             <div className="biopsie-list-block">
               <h4>PDF de biopsie uploadés</h4>
@@ -96,32 +105,36 @@ const ExamenBiopsie: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="center-col">
-          <div className="biopsie-patients-block">
-            <h4>Patients en cours de biopsie</h4>
-            <ul>
-              {patients.length === 0 && <li>Aucun patient en cours</li>}
-              {patients.map((p, i) => (
-                <li key={i}>{p}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
         <div className="right-col">
           <div className="patient-meta">
             <h4>Résumé patient</h4>
-            {/* À remplacer par des données dynamiques si besoin */}
             <ul>
               <li>Âge : 52 ans</li>
               <li>Sexe : Féminin</li>
               <li>Antécédents familiaux : Oui</li>
             </ul>
           </div>
-          <div className="biopsie-result">
-            <h4>Résultat de la biopsie</h4>
+          <div className="ia-prediction">
+            <h4>Résultat IA/biopsie</h4>
             {loading ? <div>Chargement...</div> : (
-              <p>{biopsie ? biopsie.resultat : 'Pas de résultat disponible pour l’instant.'}</p>
+              biopsie ? (
+                <div className="ia-result-block">
+                  <div className="ia-header">
+                    <span className="ia-format">{biopsie.rapport_url ? '📄' : '❓'}</span>
+                    <span className="ia-score">{biopsie.resultat}</span>
+                  </div>
+                  <div className="ia-findings">{biopsie.patient && `Patient : ${biopsie.patient}`}</div>
+                </div>
+              ) : (
+                <p>Pas de résultat disponible pour l’instant.</p>
+              )
             )}
+            <button className="custom-btn" disabled>🔍 Voir explications IA</button>
+          </div>
+          <div className="actions">
+            <button className="custom-btn">🖊️ Annoter</button>
+            <button className="custom-btn">📤 Exporter PDF</button>
+            <button className="custom-btn">🗣️ Demander un avis</button>
           </div>
         </div>
       </div>
