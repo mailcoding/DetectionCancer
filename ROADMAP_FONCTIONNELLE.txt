@@ -1,32 +1,56 @@
+
 # Roadmap Fonctionnelle – Dashboard Médical IA
 
 ## 1. Upload et gestion des fichiers
-- [ ] Ajouter le support de l’upload PDF (biopsies)
-- [ ] Améliorer l’upload : drag & drop, multi-fichiers
-- [ ] Historique des examens : filtrage, tri, recherche
-- [ ] Prévisualisation avancée DICOM : outils d’annotation enrichis
+- [x] Ajouter le support de l’upload PDF (biopsies)
+- [x] Améliorer l’upload : drag & drop (partiel), multi-fichiers (à faire)
+- [x] Historique des examens : affichage, filtrage/tri/recherche (à approfondir)
+- [~] Prévisualisation avancée DICOM : outils d’annotation de base, enrichissement possible
 
 ## 2. Analyse et Prédictions IA
-- [ ] Intégrer le module IA (API prédiction)
-- [ ] Afficher le score BI-RADS et l’indicateur de confiance
-- [ ] Afficher les cartes thermiques (heatmaps) sur l’image
+- [x] Intégrer le module IA (API prédiction)
+- [x] Afficher le score BI-RADS et l’indicateur de confiance
+- [x] Afficher les cartes thermiques (heatmaps) sur l’image
 - [ ] Comparaison temporelle (superposition, suivi lésion)
-- [ ] Afficher les explications techniques (facteurs, métriques)
+- [x] Afficher les explications techniques (facteurs, métriques)
 
 ## 3. Visualisation et outils
-- [ ] Multi-onglets pour comparaison d’examens
+- [x] Multi-onglets pour comparaison d’examens
 - [ ] Affichage expert (données brutes DICOM)
 - [ ] Export des annotations en PDF
 - [ ] Visualisation 3D (si données disponibles)
 
 ## 4. Collaboration et suivi patient
 - [ ] Module de commentaires/collaboration entre professionnels
-- [ ] Suivi patient enrichi (timeline, notifications)
+- [~] Suivi patient enrichi (timeline de base, notifications à faire)
 
 ## 5. Sécurité et expérience utilisateur
-- [ ] Améliorer la gestion des erreurs et l’UX (feedback, loading, etc.)
-- [ ] Finaliser la gestion des rôles et des accès
+- [x] Améliorer la gestion des erreurs et l’UX (feedback, loading, etc.)
+- [x] Finaliser la gestion des rôles et des accès
 
----
+----
 
 Ce fichier sert de référentiel pour le suivi des développements à venir. À mettre à jour à chaque étape franchie.
+
+
+# Plan d'action priorisé (prochaines étapes)
+
+1. **Upload et gestion des fichiers**
+   - Finaliser le multi-upload (plusieurs fichiers à la fois, drag & drop avancé)
+   - Ajouter le filtrage, tri et recherche avancés dans l’historique des examens
+
+2. **Analyse et Prédictions IA**
+   - Implémenter la comparaison temporelle (superposition d’examens, suivi de l’évolution d’une lésion)
+
+3. **Visualisation et outils**
+   - Ajouter un affichage expert des données brutes DICOM (onglet ou modal dédié)
+   - Permettre l’export des annotations et résultats en PDF
+   - (Optionnel) Visualisation 3D si tu obtiens des données compatibles
+
+4. **Collaboration et suivi patient**
+   - Développer un module de commentaires/collaboration entre professionnels (ex : fil de discussion par patient ou examen)
+   - Enrichir le suivi patient : timeline dynamique, notifications (ex : rappels, nouveaux résultats)
+
+5. **Sécurité et expérience utilisateur**
+   - Continuer à améliorer l’UX sur les nouveaux modules (feedback, loading, accessibilité)
+   - Tester la gestion des rôles sur tous les nouveaux écrans
