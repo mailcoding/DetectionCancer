@@ -4,7 +4,7 @@ services:
     name: detectioncancer-frontend
     env: node
     buildCommand: npm install && npm run build
-    startCommand: serve -s build
+    startCommand: npx serve -s build
     envVars:
       - key: REACT_APP_API_URL
         sync: false
