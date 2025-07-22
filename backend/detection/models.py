@@ -29,4 +29,8 @@ class BiopsyReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to='biopsies/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    # Optionnel : lien vers un patient, un examen, etc.
+    patient = models.CharField(max_length=128, blank=True, null=True)
+    resultat = models.CharField(max_length=256, blank=True, null=True)
+
+    def __str__(self):
+        return f"BiopsyReport #{self.id} ({self.file.name})"

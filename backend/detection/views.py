@@ -1,3 +1,29 @@
+class BiopsyPatientsListView(APIView):
+    def get(self, request):
+        patients = BiopsyReport.objects.values_list('patient', flat=True).distinct()
+        patients = [p for p in patients if p]
+        return Response(patients)
+
+class BiopsyReportListView(APIView):
+    def get(self, request):
+        reports = BiopsyReport.objects.all().order_by('-uploaded_at')
+        serializer = BiopsyReportSerializer(reports, many=True, context={'request': request})
+        return Response(serializer.data)
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
+
+class BiopsyUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, format=None):
+        file_obj = request.FILES.get('file')
+        patient = request.data.get('patient', '')
+        resultat = request.data.get('resultat', '')
+        if not file_obj or file_obj.content_type not in ['application/pdf', 'image/png', 'image/jpeg']:
+            return Response({'error': 'Format de fichier non supporté.'}, status=status.HTTP_400_BAD_REQUEST)
+        report = BiopsyReport.objects.create(file=file_obj, user=request.user, patient=patient, resultat=resultat)
+        serializer = BiopsyReportSerializer(report, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
