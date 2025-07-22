@@ -1,3 +1,41 @@
+/* HistoriquePatient - nouvelle disposition et pop-up */
+.hist-flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.hist-search-top {
+  margin-bottom: 0;
+  width: 100%;
+  max-width: 420px;
+  align-self: flex-start;
+}
+.hist-filtres-tri-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+.hist-list-top {
+  margin-top: 0;
+}
+.hist-patient-hover {
+  cursor: pointer;
+  text-decoration: underline dotted #888;
+}
+.hist-patient-popup {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 18px 22px;
+  min-width: 260px;
+  max-width: 340px;
+  font-size: 15px;
+  color: #222;
+  transition: opacity 0.15s;
+}
 /* HistoriquePatient.tsx - Styles UX avancés */
 .historique-tools {
   gap: 16px;
