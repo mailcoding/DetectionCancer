@@ -1,3 +1,24 @@
+.left-col {
+  flex: 2;
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(33,150,83,0.08);
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+@media (max-width: 900px) {
+  .left-col {
+    min-width: unset;
+    width: 100%;
+    padding: 1rem 0.5rem;
+    box-shadow: none;
+    border-radius: 8px;
+  }
+}
 .main-content {
   display: flex;
   gap: 2.5rem;
