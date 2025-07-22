@@ -1,3 +1,92 @@
+/* HistoriquePatient.tsx - Styles UX avancés */
+.historique-tools {
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.hist-filtres-label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.hist-filtres-btns {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.hist-search-block {
+  margin-bottom: 8px;
+}
+.hist-search-input {
+  width: 100%;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.hist-sort-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hist-sort-label {
+  font-weight: 500;
+}
+.hist-sort-select {
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.hist-sort-btn {
+  padding: 4px 8px;
+}
+.hist-patient-meta {
+  margin-bottom: 24px;
+}
+.hist-patient-title {
+  margin-bottom: 8px;
+}
+.hist-patient-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 15px;
+}
+.hist-list-title {
+  margin-bottom: 8px;
+}
+.hist-exam-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.hist-exam-empty {
+  color: #888;
+}
+.hist-exam-item {
+  background: #f7f7fa;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hist-exam-type {
+  font-weight: 500;
+  color: #2a2a2a;
+}
+.hist-exam-date {
+  font-size: 14px;
+  color: #555;
+}
+.hist-exam-resultat {
+  font-size: 14px;
+}
+.hist-exam-resultat.positif {
+  color: #c00;
+}
+.hist-exam-resultat.negatif {
+  color: #228b22;
+}
 .nouvel-examen-container {
   max-width: 1200px;
   margin: 0 auto;
