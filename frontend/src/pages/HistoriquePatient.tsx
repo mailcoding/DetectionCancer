@@ -93,9 +93,9 @@ const HistoriquePatient: React.FC = () => {
         <div className="hist-filtres-tri-row">
           <div className="hist-filtres-label">Filtres</div>
           <div className="hist-filtres-btns">
-            <button className={`custom-btn${filtre==='Examens'?' active':''}`} onClick={() => setFiltre('Examens')} aria-pressed={filtre === 'Examens'}>Examens</button>
-            <button className={`custom-btn${filtre==='Biopsies'?' active':''}`} onClick={() => setFiltre('Biopsies')} aria-pressed={filtre==='Biopsies'}>Biopsies</button>
-            <button className={`custom-btn${filtre==='Tous'?' active':''}`} onClick={() => setFiltre('Tous')} aria-pressed={filtre==='Tous'}>Tous</button>
+            <button className={`custom-btn${filtre==='Examens'?' active':''}`} onClick={() => setFiltre('Examens')} aria-pressed={filtre === 'Examens' ? 'true' : 'false'}>Examens</button>
+            <button className={`custom-btn${filtre==='Biopsies'?' active':''}`} onClick={() => setFiltre('Biopsies')} aria-pressed={filtre === 'Biopsies' ? 'true' : 'false'}>Biopsies</button>
+            <button className={`custom-btn${filtre==='Tous'?' active':''}`} onClick={() => setFiltre('Tous')} aria-pressed={filtre === 'Tous' ? 'true' : 'false'}>Tous</button>
           </div>
           <div className="sort-block hist-sort-block">
             <label htmlFor="sortBy-select" className="hist-sort-label">Trier par</label>
