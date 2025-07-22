@@ -61,9 +61,9 @@ const ExamenBiopsie: React.FC = () => {
 
   return (
     <div className="nouvel-examen-container">
-      <div className="tabs">
+      {/* <div className="tabs">
         <div className="tab active">🔬 Biopsie</div>
-      </div>
+      </div> */}
       <div className="main-content">
         <div className="left-col">
           <div className="dicom-tools">

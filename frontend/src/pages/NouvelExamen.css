@@ -1,3 +1,80 @@
+.dicom-tools {
+  background: #f8f8fc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(33,150,83,0.06);
+  padding: 1.2rem 1rem 1.5rem 1rem;
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.dicom-tools > div:first-child {
+  font-weight: 600;
+  color: #228b22;
+  margin-bottom: 0.5rem;
+  font-size: 1.08rem;
+}
+.biopsie-upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px #e2e2e2;
+  padding: 1rem 1.2rem;
+}
+.biopsie-pdf-label {
+  font-weight: 500;
+  color: #228b22;
+  margin-bottom: 0.2rem;
+}
+.biopsie-upload-form input[type="file"] {
+  margin-bottom: 0.5rem;
+}
+.custom-btn {
+  background: #eafbe7;
+  color: #228b22;
+  border: 1px solid #bdbdbd;
+  border-radius: 6px;
+  padding: 0.5rem 1.1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.custom-btn:hover {
+  background: #d6f5d0;
+  color: #166d2b;
+  border-color: #228b22;
+}
+.biopsie-error {
+  color: #c00;
+  font-size: 0.98rem;
+  margin-top: 0.3rem;
+}
+.pdf-preview {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px #e2e2e2;
+  padding: 0.7rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.98rem;
+}
+.biopsie-list-block {
+  margin-top: 1.2rem;
+}
+.biopsie-list-block h4 {
+  color: #228b22;
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+}
+.biopsie-list-block ul {
+  padding-left: 12px;
+  margin: 0;
+}
+.biopsie-list-block li {
+  margin-bottom: 0.3rem;
+  font-size: 0.97rem;
+}
 .left-col {
   flex: 2;
   background: #fff;
