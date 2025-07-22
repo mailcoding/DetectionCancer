@@ -38,8 +38,8 @@ const ExamenBiopsie: React.FC = () => {
     e.preventDefault();
     setError(null);
     const file = fileInput.current?.files?.[0];
-    if (!file || file.type !== 'application/pdf') {
-      setError('Veuillez sélectionner un fichier PDF.');
+    if (!file || !['application/pdf', 'image/png', 'image/jpeg'].includes(file.type)) {
+      setError('Veuillez sélectionner un fichier PDF, PNG ou JPEG.');
       return;
     }
     const formData = new FormData();
@@ -75,9 +75,9 @@ const ExamenBiopsie: React.FC = () => {
               <input
                 id="biopsie-pdf-upload"
                 type="file"
-                accept="application/pdf"
+                accept="application/pdf,image/png,image/jpeg"
                 ref={fileInput}
-                title="Sélectionner un fichier PDF"
+                title="Sélectionner un fichier PDF, PNG ou JPEG"
               />
               <button className="custom-btn" type="submit">{loading ? <span className="loader"></span> : 'Analyser'}</button>
             </form>
@@ -85,10 +85,21 @@ const ExamenBiopsie: React.FC = () => {
             {biopsie?.rapport_url && (
               <a className="custom-btn" href={biopsie.rapport_url} target="_blank" rel="noopener noreferrer">Télécharger rapport</a>
             )}
-            {/* Preview PDF */}
+            {/* Preview fichier uploadé */}
             {fileInput.current?.files?.[0] && (
               <div className="pdf-preview">
-                <p>Fichier PDF chargé : {fileInput.current.files[0].name}</p>
+                {fileInput.current.files[0].type === 'application/pdf' ? (
+                  <p>Fichier PDF chargé : {fileInput.current.files[0].name}</p>
+                ) : (
+                  <div>
+                    <p>Image chargée : {fileInput.current.files[0].name}</p>
+                    <img
+                      src={URL.createObjectURL(fileInput.current.files[0])}
+                      alt="Prévisualisation de la biopsie"
+                      style={{maxWidth: '220px', maxHeight: '220px', borderRadius: '8px', marginTop: '8px', boxShadow: '0 2px 8px #ccc'}}
+                    />
+                  </div>
+                )}
               </div>
             )}
             <div className="biopsie-list-block">
