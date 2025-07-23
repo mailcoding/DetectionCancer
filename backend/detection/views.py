@@ -1,3 +1,15 @@
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser
+from .serializers import MedicalImageSerializer, BiopsyReportSerializer
+from rest_framework.generics import ListAPIView, CreateAPIView
+from .models import MedicalImage, BiopsyReport
+from rest_framework import permissions, generics
+from django.contrib.auth.models import User
+
+
 class BiopsyPatientsListView(APIView):
     def get(self, request):
         patients = BiopsyReport.objects.values_list('patient', flat=True).distinct()
@@ -9,8 +21,7 @@ class BiopsyReportListView(APIView):
         reports = BiopsyReport.objects.all().order_by('-uploaded_at')
         serializer = BiopsyReportSerializer(reports, many=True, context={'request': request})
         return Response(serializer.data)
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework import status
+
 
 class BiopsyUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -24,14 +35,7 @@ class BiopsyUploadView(APIView):
         report = BiopsyReport.objects.create(file=file_obj, user=request.user, patient=patient, resultat=resultat)
         serializer = BiopsyReportSerializer(report, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser
-from .serializers import MedicalImageSerializer, BiopsyReportSerializer
-from rest_framework.generics import ListAPIView, CreateAPIView
-from .models import MedicalImage, BiopsyReport
-from rest_framework import permissions, generics
-from django.contrib.auth.models import User
+
 
 class ImageAnalysisView(APIView):
     def post(self, request):
