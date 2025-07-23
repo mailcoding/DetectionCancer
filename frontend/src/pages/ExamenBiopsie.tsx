@@ -16,6 +16,8 @@ const ExamenBiopsie: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [biopsies, setBiopsies] = useState<Biopsie[]>([]);
   const [patients, setPatients] = useState<string[]>([]);
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
+  const [patientInfo, setPatientInfo] = useState<{biopsies: Biopsie[]; lastDate?: string} | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
@@ -24,15 +26,24 @@ const ExamenBiopsie: React.FC = () => {
       .then(setBiopsie)
       .catch(() => setBiopsie(null))
       .finally(() => setLoading(false));
-    // Liste de tous les PDF uploadés
     apiFetch<Biopsie[]>('/detection/biopsies/')
       .then(data => setBiopsies(data))
       .catch(() => setBiopsies([]));
-    // Liste des patients en biopsie (supposé endpoint /detection/biopsie/patients/)
     apiFetch<string[]>('/detection/biopsie/patients/')
       .then(data => setPatients(data))
       .catch(() => setPatients([]));
   }, []);
+
+  // Met à jour les infos patient quand sélectionné
+  useEffect(() => {
+    if (selectedPatient && biopsies.length > 0) {
+      const biopsiesPatient = biopsies.filter(b => b.patient === selectedPatient);
+      const lastDate = biopsiesPatient.length > 0 ? biopsiesPatient[0].date : undefined;
+      setPatientInfo({ biopsies: biopsiesPatient, lastDate });
+    } else {
+      setPatientInfo(null);
+    }
+  }, [selectedPatient, biopsies]);
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,11 +130,36 @@ const ExamenBiopsie: React.FC = () => {
         <div className="right-col">
           <div className="patient-meta">
             <h4>Résumé patient</h4>
-            <ul>
-              <li>Âge : 52 ans</li>
-              <li>Sexe : Féminin</li>
-              <li>Antécédents familiaux : Oui</li>
-            </ul>
+            <div style={{marginBottom: 12}}>
+              <label htmlFor="select-patient">Sélectionner un patient : </label>
+              <select
+                id="select-patient"
+                value={selectedPatient || ''}
+                onChange={e => setSelectedPatient(e.target.value || null)}
+                style={{marginLeft: 8, padding: 4, borderRadius: 4}}
+              >
+                <option value="">-- Choisir --</option>
+                {patients.map(p => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+            {selectedPatient && patientInfo ? (
+              <ul>
+                <li><b>Nom patient :</b> {selectedPatient}</li>
+                <li><b>Nombre de biopsies :</b> {patientInfo.biopsies.length}</li>
+                <li><b>Dernière date :</b> {patientInfo.lastDate || 'N/A'}</li>
+                <li><b>Résultats récents :</b>
+                  <ul style={{marginLeft: 12}}>
+                    {patientInfo.biopsies.slice(0,3).map(b => (
+                      <li key={b.id}>Résultat : {b.resultat} ({b.date})</li>
+                    ))}
+                  </ul>
+                </li>
+              </ul>
+            ) : (
+              <div style={{color: '#888'}}>Sélectionnez un patient pour voir le détail.</div>
+            )}
           </div>
           <div className="ia-prediction">
             <h4>Résultat IA/biopsie</h4>
