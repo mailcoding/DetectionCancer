@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, DragEvent } from 'react';
 import { apiFetch } from '../api';
 import './NouvelExamen.css';
 
@@ -19,6 +19,9 @@ const ExamenBiopsie: React.FC = () => {
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [patientInfo, setPatientInfo] = useState<{biopsies: Biopsie[]; lastDate?: string} | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploadStatus, setUploadStatus] = useState<{[name: string]: 'pending'|'success'|'error'}>({});
+  const [dragActive, setDragActive] = useState(false);
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
@@ -48,14 +51,14 @@ const ExamenBiopsie: React.FC = () => {
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    const file = fileInput.current?.files?.[0];
-    if (!file || !['application/pdf', 'image/png', 'image/jpeg'].includes(file.type)) {
-      setError('Veuillez sélectionner un fichier PDF, PNG ou JPEG.');
+    if (selectedFiles.length === 0) {
+      setError('Veuillez sélectionner au moins un fichier PDF, PNG ou JPEG.');
       return;
     }
-    const formData = new FormData();
-    formData.append('file', file);
     const token = localStorage.getItem('token');
+    const formData = new FormData();
+    selectedFiles.forEach(f => formData.append('files', f));
+    setUploadStatus(Object.fromEntries(selectedFiles.map(f => [f.name, 'pending'])));
     const res = await fetch(`${API_URL}/detection/biopsies/upload/`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -63,11 +66,39 @@ const ExamenBiopsie: React.FC = () => {
     });
     if (!res.ok) {
       setError('Erreur lors de l’upload.');
+      setUploadStatus(Object.fromEntries(selectedFiles.map(f => [f.name, 'error'])));
     } else {
       setError('Upload réussi !');
-      // Recharger la liste après upload
+      setUploadStatus(Object.fromEntries(selectedFiles.map(f => [f.name, 'success'])));
+      setSelectedFiles([]);
+      if (fileInput.current) fileInput.current.value = '';
       apiFetch<Biopsie[]>('/detection/biopsies/').then(setBiopsies);
     }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const files = Array.from(e.target.files).filter(f => ['application/pdf', 'image/png', 'image/jpeg'].includes(f.type));
+    setSelectedFiles(files);
+    setError(files.length === 0 ? 'Aucun fichier valide sélectionné.' : null);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragActive(false);
+    const files = Array.from(e.dataTransfer.files).filter(f => ['application/pdf', 'image/png', 'image/jpeg'].includes(f.type));
+    setSelectedFiles(files);
+    setError(files.length === 0 ? 'Aucun fichier valide sélectionné.' : null);
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragActive(false);
   };
 
   return (
@@ -81,38 +112,61 @@ const ExamenBiopsie: React.FC = () => {
             <div>Outils biopsie :</div>
             <form onSubmit={handleUpload} className="biopsie-upload-form">
               <label htmlFor="biopsie-pdf-upload" className="biopsie-pdf-label">
-                Sélectionner le fichier PDF du résultat :
+                Sélectionner ou glisser-déposer un ou plusieurs fichiers PDF, PNG ou JPEG :
               </label>
-              <input
-                id="biopsie-pdf-upload"
-                type="file"
-                accept="application/pdf,image/png,image/jpeg"
-                ref={fileInput}
-                title="Sélectionner un fichier PDF, PNG ou JPEG"
-              />
-              <button className="custom-btn" type="submit">{loading ? <span className="loader"></span> : 'Analyser'}</button>
+              <div
+                className={`dropzone${dragActive ? ' drag-active' : ''}`}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                style={{
+                  border: dragActive ? '2px solid #1976d2' : '2px dashed #aaa',
+                  borderRadius: 8,
+                  padding: 24,
+                  textAlign: 'center',
+                  background: dragActive ? '#e3f2fd' : '#fafbfc',
+                  marginBottom: 12,
+                  cursor: 'pointer',
+                  transition: 'background 0.2s, border 0.2s',
+                }}
+                onClick={() => fileInput.current?.click()}
+              >
+                {selectedFiles.length === 0 ? (
+                  <span>Glissez-déposez ici ou cliquez pour sélectionner des fichiers</span>
+                ) : (
+                  <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
+                    {selectedFiles.map(f => (
+                      <li key={f.name} style={{marginBottom: 6, display: 'flex', alignItems: 'center'}}>
+                        <span style={{marginRight: 8}}>{f.type.startsWith('image') ? '🖼️' : '📄'}</span>
+                        <span style={{fontWeight: 500}}>{f.name}</span>
+                        <span style={{marginLeft: 8, color: '#888', fontSize: 13}}>{(f.size/1024).toFixed(1)} Ko</span>
+                        {uploadStatus[f.name] === 'success' && <span style={{color: 'green', marginLeft: 8}}>✔️</span>}
+                        {uploadStatus[f.name] === 'error' && <span style={{color: 'red', marginLeft: 8}}>❌</span>}
+                        {f.type.startsWith('image') && (
+                          <img src={URL.createObjectURL(f)} alt="preview" style={{height: 32, marginLeft: 8, borderRadius: 4, boxShadow: '0 1px 4px #ccc'}} />
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <input
+                  id="biopsie-pdf-upload"
+                  type="file"
+                  accept="application/pdf,image/png,image/jpeg"
+                  ref={fileInput}
+                  title="Sélectionner un ou plusieurs fichiers PDF, PNG ou JPEG"
+                  multiple
+                  style={{display: 'none'}}
+                  onChange={handleFileChange}
+                />
+              </div>
+              <button className="custom-btn" type="submit" style={{marginTop: 12}}>{loading ? <span className="loader"></span> : 'Analyser'}</button>
             </form>
             {error && <div className="biopsie-error">{error}</div>}
             {biopsie?.rapport_url && (
               <a className="custom-btn" href={biopsie.rapport_url} target="_blank" rel="noopener noreferrer">Télécharger rapport</a>
             )}
-            {/* Preview fichier uploadé */}
-            {fileInput.current?.files?.[0] && (
-              <div className="pdf-preview">
-                {fileInput.current.files[0].type === 'application/pdf' ? (
-                  <p>Fichier PDF chargé : {fileInput.current.files[0].name}</p>
-                ) : (
-                  <div>
-                    <p>Image chargée : {fileInput.current.files[0].name}</p>
-                    <img
-                      src={URL.createObjectURL(fileInput.current.files[0])}
-                      alt="Prévisualisation de la biopsie"
-                      style={{maxWidth: '220px', maxHeight: '220px', borderRadius: '8px', marginTop: '8px', boxShadow: '0 2px 8px #ccc'}}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Plus de preview ici, tout est dans la dropzone */}
             <div className="biopsie-list-block">
               <h4>PDF de biopsie uploadés</h4>
               <ul>

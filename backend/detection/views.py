@@ -36,6 +36,52 @@ class BiopsyUploadView(APIView):
         serializer = BiopsyReportSerializer(report, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+# --- Nouvelle version fusionnée et avancée ---
+from django.db import models
+
+class BiopsyReportListView(APIView):
+    def get(self, request):
+        queryset = BiopsyReport.objects.all()
+        # Recherche
+        search = request.GET.get('search')
+        if search:
+            queryset = queryset.filter(
+                models.Q(patient__icontains=search) |
+                models.Q(resultat__icontains=search)
+            )
+        # Filtrage par type (PDF/image)
+        type_ = request.GET.get('type')
+        if type_:
+            if type_ == 'pdf':
+                queryset = queryset.filter(file__iendswith='.pdf')
+            elif type_ == 'image':
+                queryset = queryset.filter(file__iregex=r'\\.(png|jpg|jpeg)$')
+        # Tri
+        ordering = request.GET.get('ordering', '-uploaded_at')
+        queryset = queryset.order_by(ordering)
+        serializer = BiopsyReportSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+class BiopsyUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, format=None):
+        files = request.FILES.getlist('files')
+        patient = request.data.get('patient', '')
+        resultat = request.data.get('resultat', '')
+        if not files:
+            return Response({'error': 'Aucun fichier reçu.'}, status=status.HTTP_400_BAD_REQUEST)
+        created = []
+        for file_obj in files:
+            if file_obj.content_type not in ['application/pdf', 'image/png', 'image/jpeg']:
+                continue
+            report = BiopsyReport.objects.create(file=file_obj, user=request.user, patient=patient, resultat=resultat)
+            created.append(report)
+        if not created:
+            return Response({'error': 'Aucun fichier valide.'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = BiopsyReportSerializer(created, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class ImageAnalysisView(APIView):
     def post(self, request):
