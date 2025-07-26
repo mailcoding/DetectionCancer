@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logo from '../images/logo.png';
 import './DashboardMedecin.css';
 import NouvelExamen from './NouvelExamen';
 import DashboardMedecinBoard from './DashboardMedecinBoard';
@@ -86,7 +87,9 @@ const DashboardMedecin: React.FC = () => {
       </aside>
       <div className="med-main-wrapper">
         <header className="med-header">
-          <div className="med-logo">BreastCare</div>
+          <div className="med-logo">
+            <img src={logo} alt="Ifar Logo" style={{height: 40}} />
+          </div>
           <div className="med-search">
             <input
               type="text"
