@@ -1,4 +1,16 @@
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser
+from .serializers import MedicalImageSerializer, BiopsyReportSerializer
+from rest_framework.generics import ListAPIView, CreateAPIView
+from .models import MedicalImage, BiopsyReport
+from rest_framework import permissions, generics
+from django.contrib.auth.models import User
 from .models import ExamenMedical
+from django.db import models
+
 class PatientExamHistoryView(APIView):
     def get(self, request, patient_id):
         type_ = request.GET.get('type')
@@ -21,16 +33,7 @@ class PatientExamHistoryView(APIView):
             for e in exams
         ]
         return Response(data)
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser
-from .serializers import MedicalImageSerializer, BiopsyReportSerializer
-from rest_framework.generics import ListAPIView, CreateAPIView
-from .models import MedicalImage, BiopsyReport
-from rest_framework import permissions, generics
-from django.contrib.auth.models import User
+
 
 
 class BiopsyPatientsListView(APIView):
@@ -60,7 +63,7 @@ class BiopsyUploadView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 # --- Nouvelle version fusionnée et avancée ---
-from django.db import models
+
 
 class BiopsyReportListView(APIView):
     def get(self, request):
