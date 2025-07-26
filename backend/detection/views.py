@@ -1,3 +1,26 @@
+from .models import ExamenMedical
+class PatientExamHistoryView(APIView):
+    def get(self, request, patient_id):
+        type_ = request.GET.get('type')
+        exams = ExamenMedical.objects.filter(patient=patient_id)
+        if type_:
+            exams = exams.filter(type=type_)
+        exams = exams.order_by('date')
+        data = [
+            {
+                'id': e.id,
+                'patient': e.patient,
+                'type': e.type,
+                'date': e.date,
+                'score_ia': e.score_ia,
+                'findings': e.findings,
+                'advice': e.advice,
+                'interpretation': e.interpretation,
+                'rapport_url': e.rapport_url,
+            }
+            for e in exams
+        ]
+        return Response(data)
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from rest_framework.response import Response

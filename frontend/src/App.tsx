@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import AuthPage from './components/AuthPage';
 import Dashboard from './pages/Dashboard';
+import ComparaisonIA from './pages/ComparaisonIA';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<AuthPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/comparaison-ia" element={<ComparaisonIA />} />
         </Routes>
         <footer className="footer">
           © 2024 BreastAI |

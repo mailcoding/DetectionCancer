@@ -1,3 +1,16 @@
+class ExamenMedical(models.Model):
+    id = models.AutoField(primary_key=True)
+    patient = models.CharField(max_length=128)
+    type = models.CharField(max_length=32, choices=[('mammographie', 'Mammographie'), ('biopsie', 'Biopsie')])
+    date = models.DateField()
+    score_ia = models.FloatField(null=True, blank=True)
+    findings = models.TextField(blank=True)
+    advice = models.TextField(blank=True)
+    interpretation = models.TextField(blank=True)
+    rapport_url = models.URLField(blank=True)
+
+    def __str__(self):
+        return f"{self.patient} - {self.type} - {self.date}"
 from django.db import models
 from django.contrib.auth.models import User
 

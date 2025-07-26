@@ -1,0 +1,26 @@
+.timeline-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #e0e0e0;
+  padding: 32px;
+  margin-top: 24px;
+}
+.timeline-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.timeline-type-label {
+  margin-left: 16px;
+}
+
+.timeline-chart-block {
+  margin-top: 24px;
+}
+
+.timeline-details-block {
+  margin-top: 24px;
+}
+.exam-details {
+  margin-top: 24px;
+}
