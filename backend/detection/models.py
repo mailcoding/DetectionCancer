@@ -27,9 +27,23 @@ class UserProfile(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='patient')
+    # Pour les patients, médecin référent obligatoire
+    medecin = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='patients', limit_choices_to={'profile__role': 'medecin'})
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+
+
+# Historique des transferts de patients entre médecins
+class TransfertPatient(models.Model):
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transferts_patient')
+    medecin_source = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='transferts_source')
+    medecin_cible = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='transferts_cible')
+    date = models.DateTimeField(auto_now_add=True)
+    motif = models.CharField(max_length=256, blank=True)
+
+    def __str__(self):
+        return f"Transfert de {self.patient.username} de {self.medecin_source} à {self.medecin_cible} le {self.date.strftime('%Y-%m-%d')}"
 
 class MedicalImage(models.Model):
     image = models.ImageField(upload_to='medical_images/')

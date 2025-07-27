@@ -3,6 +3,8 @@ import logo from '../images/logo.png';
 import './DashboardMedecin.css';
 import NouvelExamen from './NouvelExamen';
 import DashboardMedecinBoard from './DashboardMedecinBoard';
+
+import DossiersPatients from './DossiersPatients';
 import BibliothequeMedecin from './BibliothequeMedecin';
 
 const notifications = [
@@ -129,6 +131,7 @@ const DashboardMedecin: React.FC = () => {
           {activeMenu === 'nouvel' ? <NouvelExamen /> : null}
           {activeMenu === 'dashboard' ? <DashboardMedecinBoard /> : null}
           {activeMenu === 'biblio' ? <BibliothequeMedecin filter={biblioFilter} /> : null}
+          {activeMenu === 'dossiers' ? <DossiersPatients /> : null}
           {selectedPatient ? (
             <div className="patient-info">
               <h2>Fiche patient : {selectedPatient.name} ({selectedPatient.id})</h2>
