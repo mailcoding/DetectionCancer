@@ -2,6 +2,7 @@ from .views import PatientExamHistoryView
 from django.urls import path
 from .views import ImageAnalysisView, MedicalImageListView, BiopsyReportUploadView, BiopsyReportListView, BiopsyPatientsListView, LastUserBiopsyView, BiopsyUploadView, BiopsyReportListView, BiopsyPatientsListView
 from .transfer_views import TransferPatientView
+from .patient_views import PatientListView
 from .auth_views import RegisterView, LoginView
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('biopsie/', LastUserBiopsyView.as_view(), name='biopsie-last'),
     path('examens/patient/<str:patient_id>/', PatientExamHistoryView.as_view(), name='patient-exam-history'),
     path('patients/transfer/', TransferPatientView.as_view(), name='transfer-patient'),
+    path('patients/', PatientListView.as_view(), name='patients-list'),
 ]

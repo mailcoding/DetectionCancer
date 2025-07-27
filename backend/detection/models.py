@@ -29,6 +29,8 @@ class UserProfile(models.Model):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='patient')
     # Pour les patients, médecin référent obligatoire
     medecin = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='patients', limit_choices_to={'profile__role': 'medecin'})
+    # Niveau d'urgence (1 = faible, 5 = critique)
+    urgence = models.PositiveSmallIntegerField(default=1)
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
