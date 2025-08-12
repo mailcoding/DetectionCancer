@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './NouvelExamen.css';
-import axios from 'axios';
+import { apiFetch } from '../api';
 import ExamenBiopsie from './ExamenBiopsie';
 import HistoriquePatient from './HistoriquePatient';
 import DicomViewer from '../components/DicomViewer';
@@ -38,22 +38,20 @@ const NouvelExamen: React.FC = () => {
   const handleUpload = async () => {
     if (!file) return;
     setIsLoading(true);
-    const formData = new FormData();
-    formData.append('image', file);
+    setIaResult(null);
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-      const response = await axios.post(`${apiUrl}/detection/analyze/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const formData = new FormData();
+      formData.append('image', file);
+      const response = await apiFetch('/detection/predict/', {
+        method: 'POST',
+        body: formData,
+        headers: {},
       });
-      setIaResult(response.data);
+      setIaResult(response);
       setFile(null);
       setPreviewUrl(null);
     } catch (err: any) {
-      if (err.response && err.response.data && err.response.data.error) {
-        setIaResult({ error: err.response.data.error });
-      } else {
-        setIaResult({ error: "Erreur inconnue lors de l'analyse." });
-      }
+      setIaResult({ error: err.message || "Erreur inconnue lors de l'analyse." });
     } finally {
       setIsLoading(false);
     }
@@ -66,16 +64,14 @@ const NouvelExamen: React.FC = () => {
         <div className={`tab ${activeTab === 'biopsie' ? 'active' : ''}`} onClick={() => setActiveTab('biopsie')}>🔬 Biopsie</div>
         <div className={`tab ${activeTab === 'historique' ? 'active' : ''}`} onClick={() => setActiveTab('historique')}>📊 Historique patient</div>
       </div>
-      {activeTab === 'biopsie' && <ExamenBiopsie />}
-      {activeTab === 'historique' && <HistoriquePatient />}
-      {activeTab === 'mammographie' && (
+      {activeTab === 'biopsie' && (
         <>
           <div className="upload-zone">
             <div className="drag-drop">
               <span>Glissez-déposez un fichier DICOM, JPEG ou PDF ici</span>
-              <label htmlFor="file-upload" className="visually-hidden">Choisir un fichier à télécharger</label>
+              <label htmlFor="file-upload-biopsie" className="visually-hidden">Choisir un fichier à télécharger</label>
               <input
-                id="file-upload"
+                id="file-upload-biopsie"
                 type="file"
                 accept=".dcm,image/jpeg,application/pdf"
                 title="Choisir un fichier à télécharger"
@@ -91,6 +87,64 @@ const NouvelExamen: React.FC = () => {
                 {isLoading ? <span className="loader"></span> : 'Analyser'}
               </button>
             </div>
+          </div>
+          <div className="ia-prediction">
+            <h4>Prédiction IA</h4>
+            {iaResult ? (
+              iaResult.error ? (
+                <p className="ia-error">{iaResult.error}</p>
+              ) : (
+                <div className="ia-result-block">
+                  <div className="ia-score">Score IA : {(iaResult.score_ia * 100).toFixed(1)}%</div>
+                  <div className="ia-diagnostic">Diagnostic : <b>{iaResult.resultat}</b></div>
+                </div>
+              )
+            ) : (
+              <p>Aucun résultat IA pour le moment.</p>
+            )}
+          </div>
+          <ExamenBiopsie />
+        </>
+      )}
+      {activeTab === 'historique' && <HistoriquePatient />}
+      {activeTab === 'mammographie' && (
+        <>
+          <div className="upload-zone">
+            <div className="drag-drop">
+              <span>Glissez-déposez un fichier DICOM, JPEG ou PDF ici</span>
+              <label htmlFor="file-upload-mammo" className="visually-hidden">Choisir un fichier à télécharger</label>
+              <input
+                id="file-upload-mammo"
+                type="file"
+                accept=".dcm,image/jpeg,application/pdf"
+                title="Choisir un fichier à télécharger"
+                onChange={handleFileChange}
+                disabled={isLoading}
+              />
+              {previewUrl && (
+                <div className="file-preview">
+                  <img src={previewUrl} alt="Aperçu" />
+                </div>
+              )}
+              <button className="custom-btn" onClick={handleUpload} disabled={isLoading || !file}>
+                {isLoading ? <span className="loader"></span> : 'Analyser'}
+              </button>
+            </div>
+          </div>
+          <div className="ia-prediction">
+            <h4>Prédiction IA</h4>
+            {iaResult ? (
+              iaResult.error ? (
+                <p className="ia-error">{iaResult.error}</p>
+              ) : (
+                <div className="ia-result-block">
+                  <div className="ia-score">Score IA : {(iaResult.score_ia * 100).toFixed(1)}%</div>
+                  <div className="ia-diagnostic">Diagnostic : <b>{iaResult.resultat}</b></div>
+                </div>
+              )
+            ) : (
+              <p>Aucun résultat IA pour le moment.</p>
+            )}
           </div>
           {/* Affichage conditionnel selon le type de fichier */}
           {file && (file.name.endsWith('.dcm') || fileType === 'application/dicom') && (
@@ -135,37 +189,7 @@ const NouvelExamen: React.FC = () => {
                   <li>Antécédents familiaux : Oui</li>
                 </ul>
               </div>
-              <div className="ia-prediction">
-                <h4>Prédiction IA</h4>
-                {iaResult ? (
-                  iaResult.error ? (
-                    <p className="ia-error">{iaResult.error}</p>
-                  ) : (
-                    <div className="ia-result-block">
-                      <div className="ia-header">
-                        <span className="ia-format">
-                          {iaResult.format === 'DICOM' && '🩻'}
-                          {iaResult.format === 'JPEG' && '🖼️'}
-                          {iaResult.format === 'PNG' && '🖼️'}
-                          {iaResult.format === 'TIFF' && '🖼️'}
-                          {iaResult.format === 'PDF' && '📄'}
-                          {iaResult.format === 'BMP' && '🖼️'}
-                          {iaResult.format === 'GIF' && '🖼️'}
-                        </span>
-                        <span className="ia-score">Score : {(iaResult.score * 100).toFixed(1)}%</span>
-                      </div>
-                      <div className="ia-findings">{iaResult.findings}</div>
-                      <div className="ia-advice">{iaResult.advice}</div>
-                      <div className="ia-interpretation">{iaResult.interpretation}</div>
-                    </div>
-                  )
-                ) : (
-                  <p>Aucun résultat IA pour le moment.</p>
-                )}
-                <button className="custom-btn" onClick={() => setShowModal(true)} disabled={!iaResult}>
-                  🔍 Voir explications IA
-                </button>
-              </div>
+              {/* Bloc prediction IA déjà affiché plus haut */}
               <div className="actions">
                 <button className="custom-btn">🖊️ Annoter</button>
                 <button className="custom-btn">📤 Exporter PDF</button>
