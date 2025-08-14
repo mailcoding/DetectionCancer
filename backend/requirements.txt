@@ -8,6 +8,8 @@ django-cors-headers
 django-oauth-toolkit
 gunicorn
 psycopg2-binary
+dj-database-url
+whitenoise
 fastapi
 flake8 
 flake8-black
@@ -19,3 +21,4 @@ pydantic
 djangorestframework-simplejwt
 tensorflow==2.19.0
 scikit-learn==1.7.1
+Pillow>=8.0.0
