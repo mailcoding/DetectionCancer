@@ -7,14 +7,19 @@ export async function apiFetch<T>(
   options: RequestInit = {},
   auth: boolean = true
 ): Promise<T> {
-  let headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(options.headers || {}) as Record<string, string>
-  };
+  let headers: Record<string, string> = {};
   // Ajout du token si besoin
   if (auth) {
     const token = localStorage.getItem('token');
     if (token) headers['Authorization'] = `Bearer ${token}`;
+  }
+  // Si le body est FormData, ne pas mettre Content-Type
+  const isFormData = options.body && typeof FormData !== 'undefined' && options.body instanceof FormData;
+  if (!isFormData) {
+    headers['Content-Type'] = 'application/json';
+  }
+  if (options.headers) {
+    headers = { ...headers, ...(options.headers as Record<string, string>) };
   }
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
