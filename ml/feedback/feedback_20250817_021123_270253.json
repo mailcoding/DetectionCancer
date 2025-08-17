@@ -1,0 +1,9 @@
+{
+  "id": "20250817_021123_270253",
+  "timestamp": "2025-08-17T02:11:23.270357",
+  "prediction": 0.8,
+  "medical_diagnosis": 0,
+  "confidence": 0.95,
+  "prediction_error": 0.8,
+  "model_version": "1.0.0"
+}
