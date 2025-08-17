@@ -62,6 +62,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'core.cors_middleware.CorsFixMiddleware',  # Middleware CORS de secours
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -150,7 +151,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Configuration CORS pour la production
-CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False') == 'True'
+# Mode debug temporaire - À RETIRER après résolution du problème
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'True') == 'True'
 
 # Origines autorisées spécifiques
 CORS_ALLOWED_ORIGINS = [
@@ -164,6 +166,9 @@ if os.getenv('CORS_ALLOWED_ORIGINS'):
     additional_origins = [origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS').split(',') if origin.strip()]
     CORS_ALLOWED_ORIGINS.extend(additional_origins)
 
+# Configuration CORS plus permissive pour les requêtes preflight
+CORS_PREFLIGHT_MAX_AGE = 86400  # 24 heures
+
 # Headers CORS autorisés
 CORS_ALLOW_HEADERS = [
     'accept',
@@ -175,6 +180,9 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'access-control-allow-origin',
+    'access-control-allow-headers',
+    'access-control-allow-methods',
 ]
 
 # Méthodes HTTP autorisées
@@ -190,6 +198,13 @@ CORS_ALLOW_METHODS = [
 # Permettre les cookies et credentials
 CORS_ALLOW_CREDENTIALS = True
 
+# Headers exposés au frontend
+CORS_EXPOSE_HEADERS = [
+    'access-control-allow-origin',
+    'access-control-allow-headers',
+    'access-control-allow-methods',
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         os.getenv('REST_FRAMEWORK_AUTH', 'rest_framework_simplejwt.authentication.JWTAuthentication'),
@@ -198,3 +213,38 @@ REST_FRAMEWORK = {
 
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', BASE_DIR / 'media')
+
+# Configuration de logging pour déboguer CORS
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'core.cors_middleware': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'corsheaders': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
+
+# Configuration de sécurité supplémentaire pour la production
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    
+    # Configuration HTTPS pour Render
+    USE_TLS = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
