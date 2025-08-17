@@ -5,8 +5,10 @@ from .transfer_views import TransferPatientView
 from .patient_views import PatientListView
 from .views_predict import CancerPredictView
 from .auth_views import RegisterView, LoginView
+from .health_views import HealthCheckView
 
 urlpatterns = [
+    path('health/', HealthCheckView.as_view(), name='health-check'),
     path('analyze/', ImageAnalysisView.as_view(), name='image-analysis'),
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
@@ -19,5 +21,4 @@ urlpatterns = [
     path('patients/transfer/', TransferPatientView.as_view(), name='transfer-patient'),
     path('patients/', PatientListView.as_view(), name='patients-list'),
     path('predict/', CancerPredictView.as_view(), name='predict-cancer'),
-
 ]

@@ -1,15 +1,54 @@
 import tensorflow as tf
 from tensorflow.keras import layers, models
-import matplotlib.pyplot as plt
-import numpy as np
 
-
-
+# Configuration
 IMAGE_SIZE = 50 
 BATCH_SIZE = 32
 CHANNELS = 3
-EPOCHS = 30
+
+def create_cancer_detection_model():
+    """
+    Crée le modèle CNN pour la détection de cancer
+    """
+    model = models.Sequential([
+        layers.Input(shape=(IMAGE_SIZE, IMAGE_SIZE, CHANNELS)),  
+        
+        # Première couche de convolution
+        layers.Conv2D(32, (3, 3), activation='relu'),
+        layers.MaxPooling2D((2, 2)),
+
+        # Deuxième couche de convolution
+        layers.Conv2D(64, (3, 3), activation='relu'),
+        layers.MaxPooling2D((2, 2)),
+
+        # Troisième couche de convolution
+        layers.Conv2D(128, (3, 3), activation='relu'),
+        layers.MaxPooling2D((2, 2)),
+
+        # Quatrième couche de convolution avec padding
+        layers.Conv2D(512, (3, 3), activation='relu', padding='same'),
+        layers.MaxPooling2D((2, 2)),
+
+        # Couches entièrement connectées
+        layers.Flatten(),
+        layers.Dense(64, activation='relu'),
+        layers.Dropout(0.5),
+        layers.Dense(1, activation='sigmoid')  # Sortie binaire (cancer/pas cancer)
+    ])
+
+    # Compiler le modèle
+    model.compile(
+        optimizer='adam',
+        loss='binary_crossentropy',
+        metrics=['accuracy']
+    )
+    
+    return model
+
 def get_dataset_partitions_tf(ds, train_split=0.8, val_split=0.1, test_split=0.1, shuffle=True, shuffle_size=10000):
+    """
+    Divise un dataset TensorFlow en ensembles d'entraînement, validation et test
+    """
     ds = ds.cache()  
     ds = ds.prefetch(buffer_size=tf.data.AUTOTUNE)
 
@@ -29,127 +68,38 @@ def get_dataset_partitions_tf(ds, train_split=0.8, val_split=0.1, test_split=0.1
 
     return train_ds, val_ds, test_ds
 
+# Code d'exemple pour utilisation (commenté pour éviter l'exécution automatique)
+"""
+# Exemple d'utilisation complète:
+
+# 1. Charger et préparer les données
+dataset = tf.keras.preprocessing.image_dataset_from_directory(
+    'path/to/data',
+    image_size=(IMAGE_SIZE, IMAGE_SIZE),
+    batch_size=BATCH_SIZE
+)
+
+# 2. Diviser le dataset
 train_ds, val_ds, test_ds = get_dataset_partitions_tf(dataset)
-print("Train batches :", len(train_ds))
-print("Val batches   :", len(val_ds))
-print("Test batches  :", len(test_ds))
-def count_elements(ds):
-    return sum([len(batch[0]) for batch in ds])
 
-print(f"🧮 Total images entraînement : {count_elements(train_ds)}")
-print(f"🧮 Total images validation   : {count_elements(val_ds)}")
-print(f"🧮 Total images test         : {count_elements(test_ds)}")
-
-
+# 3. Normalisation
 normalization_layer = tf.keras.layers.Rescaling(1./255)
-
 train_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
 val_ds = val_ds.map(lambda x, y: (normalization_layer(x), y))
 test_ds = test_ds.map(lambda x, y: (normalization_layer(x), y))
 
-from tensorflow.keras import layers, models
-
-model = models.Sequential([
-    layers.Input(shape=(50, 50, 3)),  
-    
-    layers.Conv2D(32, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-
-    layers.Conv2D(128, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-
-    layers.Conv2D(512, (3, 3), activation='relu', padding='same'),
-    layers.MaxPooling2D((2, 2)),
-
-    layers.Flatten(),
-    layers.Dense(64, activation='relu'),
-    layers.Dropout(0.5),
-    layers.Dense(1, activation='sigmoid')
-])
-
-model.compile(
-    optimizer='adam',
-    loss='binary_crossentropy',
-    metrics=['accuracy']
-)
-model.summary()
-
+# 4. Créer et entraîner le modèle
+model = create_cancer_detection_model()
 history = model.fit(
     train_ds,
     validation_data=val_ds,
-    epochs=EPOCHS
+    epochs=30
 )
 
+# 5. Évaluer le modèle
 test_loss, test_acc = model.evaluate(test_ds)
-print(f"✅ Test accuracy : {test_acc:.4f}")
-acc = history.history['accuracy']
-val_acc = history.history['val_accuracy']
-loss = history.history['loss']
-val_loss = history.history['val_loss']
-epochs_range = range(len(acc))  
+print(f"Test accuracy : {test_acc:.4f}")
 
-plt.figure(figsize=(7, 5))
-plt.plot(epochs_range, acc, label="Accuracy (Entraînement)", color="blue")
-plt.plot(epochs_range, loss, label="Loss (Entraînement)", color="green")
-plt.title("Précision & Perte sur l'entraînement")
-plt.xlabel("Époques")
-plt.ylabel("Valeurs")
-plt.legend()
-plt.grid(True)
-plt.show()
-
-plt.figure(figsize=(7, 5))
-plt.plot(epochs_range, val_acc, label="Accuracy (Validation)", color="orange")
-plt.plot(epochs_range, val_loss, label="Loss (Validation)", color="red")
-plt.title("Précision & Perte sur la validation")
-plt.xlabel("Époques")
-plt.ylabel("Valeurs")
-plt.legend()
-plt.grid(True)
-plt.show()
-
-from sklearn.metrics import classification_report
-
-y_true = []
-y_pred = []
-
-for images, labels in test_ds:
-    preds = model.predict(images)
-    preds = (preds > 0.5).astype("int32").flatten()
-    
-    y_true.extend(labels.numpy())
-    y_pred.extend(preds)
-
-print(classification_report(y_true, y_pred, target_names=['Non Cancéreux', 'Cancéreux']))
-
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
-import numpy as np
-import matplotlib.pyplot as plt
-y_true = []
-y_pred = []
-
-for images, labels in test_ds:
-    preds = model.predict(images, verbose=0)
-    preds = (preds > 0.5).astype("int32").flatten()
-
-    y_true.extend(labels.numpy())
-    y_pred.extend(preds)
-
-cm = confusion_matrix(y_true, y_pred)
-disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["Cancéreux", "Non Cancéreux"])
-
-plt.figure(figsize=(6, 6))
-disp.plot(cmap=plt.cm.Blues)
-plt.title("Matrice de confusion")
-plt.grid(False)
-plt.show()
-
-print(classification_report(y_true, y_pred, target_names=["Cancéreux", "Non Cancéreux"]))
-
-# Sauvegarde du modèle
-model_version = 1
-model.save(f"monmodel_v{model_version}.keras")
-model.save(r'model_v2.keras')
+# 6. Sauvegarder le modèle
+model.save('model_trained.keras')
+"""

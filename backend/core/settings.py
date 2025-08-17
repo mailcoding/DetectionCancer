@@ -11,12 +11,17 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
 # Chargement du .env
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
+
+# Ajouter le dossier parent au PYTHONPATH pour accéder au module ml
+PROJECT_ROOT = BASE_DIR.parent
+sys.path.append(str(PROJECT_ROOT))
 
 
 # Quick-start development settings - unsuitable for production

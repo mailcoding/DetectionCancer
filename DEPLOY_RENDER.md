@@ -24,7 +24,7 @@ SECRET_KEY=your-super-secret-key-here
 DEBUG=False
 ALLOWED_HOSTS=detectioncancer-backend.onrender.com,.onrender.com
 
-# CORS Configuration  
+# CORS Configuration
 CORS_ALLOW_ALL_ORIGINS=False
 CORS_ALLOWED_ORIGINS=https://detectioncancerfront.onrender.com
 
@@ -63,6 +63,22 @@ REACT_APP_BACKEND_URL=https://detectioncancer-backend.onrender.com
 ## 🔧 Corrections apportées
 
 ### Backend (settings.py)
+
+- ✅ CORS middleware repositionné en premier
+- ✅ ALLOWED_HOSTS configuré pour Render
+- ✅ CORS_ALLOWED_ORIGINS avec l'URL du frontend
+- ✅ Headers et méthodes CORS configurés
+- ✅ CORS_ALLOW_CREDENTIALS activé
+
+### Requirements.txt
+
+- ✅ Ajout de `dj-database-url` pour PostgreSQL
+- ✅ Ajout de `whitenoise` pour les fichiers statiques
+- ✅ Ajout de `Pillow` pour le traitement d'images
+
+## 🔧 Corrections apportées
+
+### Backend (settings.py)
 - ✅ CORS middleware repositionné en premier
 - ✅ ALLOWED_HOSTS configuré pour Render
 - ✅ CORS_ALLOWED_ORIGINS avec l'URL du frontend
@@ -80,18 +96,70 @@ REACT_APP_BACKEND_URL=https://detectioncancer-backend.onrender.com
 - ✅ Création automatique de profil utilisateur
 - ✅ Messages d'erreur détaillés
 
+### Modèle IA (ml/predict.py)
+- ✅ **NOUVEAU** : Utilisation du modèle défini dans `ml/models/modele.py`
+- ✅ **NOUVEAU** : Chargement intelligent (pré-entraîné ou poids aléatoires)
+- ✅ **NOUVEAU** : Pas de crash si modèle absent
+- ✅ **NOUVEAU** : Architecture CNN complète intégrée
+
+## 🧠 Solution du problème de modèle IA
+
+### Architecture du modèle intégré
+Le modèle est maintenant défini directement dans le code (basé sur `ml/models/modele.py`) :
+
+```python
+# Modèle CNN pour détection de cancer
+Sequential([
+    Input(shape=(50, 50, 3)),           # Images RGB 50x50
+    Conv2D(32, (3, 3), activation='relu'),
+    MaxPooling2D((2, 2)),
+    Conv2D(64, (3, 3), activation='relu'), 
+    MaxPooling2D((2, 2)),
+    Conv2D(128, (3, 3), activation='relu'),
+    MaxPooling2D((2, 2)),
+    Conv2D(512, (3, 3), activation='relu', padding='same'),
+    MaxPooling2D((2, 2)),
+    Flatten(),
+    Dense(64, activation='relu'),
+    Dropout(0.5),
+    Dense(1, activation='sigmoid')      # Sortie binaire
+])
+```
+
+### Fonctionnement intelligent
+1. **Essai 1** : Charge le modèle pré-entraîné si `ml/models/model_v2.keras` existe
+2. **Essai 2** : Crée un modèle basé sur `modele.py` avec poids aléatoires  
+3. **Avertissement** : Informe l'utilisateur sur la fiabilité des prédictions
+
 ## 🐛 Résolution des problèmes
 
-### Erreur CORS
+### ❌ Erreur: Modèle IA non trouvé
+**Problème**: `ValueError: File not found: filepath=ml/models/model_v2.keras`
+
+**Solutions**:
+1. **Mode dégradé** (recommandé) : Le service démarre sans le modèle IA
+2. **Upload manuel** : Ajouter le modèle réel via Git LFS ou transfer
+3. **Test local** : Utiliser le script de création de modèle factice
+
+```bash
+# Créer un modèle factice localement
+cd ml
+python create_dummy_model.py
+```
+
+### ❌ Erreur CORS
+
 - Vérifiez que `CORS_ALLOWED_ORIGINS` contient l'URL exacte du frontend
 - Le middleware CORS doit être en premier dans `MIDDLEWARE`
 
-### Erreur 500
+### ❌ Erreur 500
+
 - Vérifiez les logs Render pour l'erreur exacte
 - Assurez-vous que toutes les variables d'environnement sont définies
 - Vérifiez que les migrations sont appliquées
 
-### Erreur de base de données
+### ❌ Erreur de base de données
+
 - Par défaut SQLite est utilisé
 - Pour PostgreSQL, définir `DATABASE_URL`
 
@@ -101,11 +169,18 @@ REACT_APP_BACKEND_URL=https://detectioncancer-backend.onrender.com
 # Logs backend Render
 render logs --service your-backend-service-name
 
+# Test du service de santé
+curl https://detectioncancer-backend.onrender.com/detection/health/
+
 # Test local
 python manage.py runserver
 curl -X POST http://localhost:8000/detection/login/ \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin123!"}'
+
+# Créer un modèle factice pour les tests
+cd ml
+python create_dummy_model.py
 ```
 
 ## ✅ Checklist de déploiement
