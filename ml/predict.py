@@ -1,3 +1,5 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = os.getenv("TF_FORCE_CPU", "")
 import tensorflow as tf
 import numpy as np
 from PIL import Image
@@ -45,7 +47,17 @@ def create_model():
 
 # Chargement du modèle
 
-# Lazy loading du modèle
+
+# Affichage du mode utilisé (CPU ou GPU)
+def print_tf_device_info():
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        print(f"✅ TensorFlow utilise le GPU : {gpus}")
+    else:
+        print("⚠️ TensorFlow utilise le CPU (aucun GPU détecté)")
+
+print_tf_device_info()
+
 model = None
 MODEL_PATH = 'ml/models/model_v2.keras'
 
