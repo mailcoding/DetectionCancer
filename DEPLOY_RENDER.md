@@ -11,7 +11,7 @@
 ```
 Environment: Python 3
 Build Command: ./backend/build.sh
-Start Command: gunicorn --chdir backend core.wsgi:application
+Start Command: gunicorn --chdir backend core.wsgi:application --workers 1
 ```
 
 ### 2. Variables d'environnement à configurer
@@ -79,6 +79,7 @@ REACT_APP_BACKEND_URL=https://detectioncancer-backend.onrender.com
 ## 🔧 Corrections apportées
 
 ### Backend (settings.py)
+
 - ✅ CORS middleware repositionné en premier
 - ✅ ALLOWED_HOSTS configuré pour Render
 - ✅ CORS_ALLOWED_ORIGINS avec l'URL du frontend
@@ -86,17 +87,20 @@ REACT_APP_BACKEND_URL=https://detectioncancer-backend.onrender.com
 - ✅ CORS_ALLOW_CREDENTIALS activé
 
 ### Requirements.txt
+
 - ✅ Ajout de `dj-database-url` pour PostgreSQL
 - ✅ Ajout de `whitenoise` pour les fichiers statiques
 - ✅ Ajout de `Pillow` pour le traitement d'images
 
 ### Auth Views
+
 - ✅ Gestion d'erreur améliorée
 - ✅ Validation des entrées
 - ✅ Création automatique de profil utilisateur
 - ✅ Messages d'erreur détaillés
 
 ### Modèle IA (ml/predict.py)
+
 - ✅ **NOUVEAU** : Utilisation du modèle défini dans `ml/models/modele.py`
 - ✅ **NOUVEAU** : Chargement intelligent (pré-entraîné ou poids aléatoires)
 - ✅ **NOUVEAU** : Pas de crash si modèle absent
@@ -105,6 +109,7 @@ REACT_APP_BACKEND_URL=https://detectioncancer-backend.onrender.com
 ## 🧠 Solution du problème de modèle IA
 
 ### Architecture du modèle intégré
+
 Le modèle est maintenant défini directement dans le code (basé sur `ml/models/modele.py`) :
 
 ```python
@@ -113,7 +118,7 @@ Sequential([
     Input(shape=(50, 50, 3)),           # Images RGB 50x50
     Conv2D(32, (3, 3), activation='relu'),
     MaxPooling2D((2, 2)),
-    Conv2D(64, (3, 3), activation='relu'), 
+    Conv2D(64, (3, 3), activation='relu'),
     MaxPooling2D((2, 2)),
     Conv2D(128, (3, 3), activation='relu'),
     MaxPooling2D((2, 2)),
@@ -127,16 +132,19 @@ Sequential([
 ```
 
 ### Fonctionnement intelligent
+
 1. **Essai 1** : Charge le modèle pré-entraîné si `ml/models/model_v2.keras` existe
-2. **Essai 2** : Crée un modèle basé sur `modele.py` avec poids aléatoires  
+2. **Essai 2** : Crée un modèle basé sur `modele.py` avec poids aléatoires
 3. **Avertissement** : Informe l'utilisateur sur la fiabilité des prédictions
 
 ## 🐛 Résolution des problèmes
 
 ### ❌ Erreur: Modèle IA non trouvé
+
 **Problème**: `ValueError: File not found: filepath=ml/models/model_v2.keras`
 
 **Solutions**:
+
 1. **Mode dégradé** (recommandé) : Le service démarre sans le modèle IA
 2. **Upload manuel** : Ajouter le modèle réel via Git LFS ou transfer
 3. **Test local** : Utiliser le script de création de modèle factice

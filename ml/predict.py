@@ -1,4 +1,5 @@
 import os
+import psutil
 os.environ["CUDA_VISIBLE_DEVICES"] = os.getenv("TF_FORCE_CPU", "")
 import tensorflow as tf
 import numpy as np
@@ -49,12 +50,17 @@ def create_model():
 
 
 # Affichage du mode utilisé (CPU ou GPU)
+
 def print_tf_device_info():
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:
         print(f"✅ TensorFlow utilise le GPU : {gpus}")
     else:
         print("⚠️ TensorFlow utilise le CPU (aucun GPU détecté)")
+    # Log mémoire dispo
+    process = psutil.Process(os.getpid())
+    mem = process.memory_info().rss / (1024 * 1024)
+    print(f"🔎 Mémoire utilisée au démarrage : {mem:.2f} Mo")
 
 print_tf_device_info()
 
@@ -91,9 +97,16 @@ def preprocess_image(image_bytes):
     return arr
 
 def predict_cancer(image_bytes):
+    # Log mémoire avant prédiction
+    process = psutil.Process(os.getpid())
+    mem = process.memory_info().rss / (1024 * 1024)
+    print(f"🔎 Mémoire utilisée avant prédiction : {mem:.2f} Mo")
     mdl = get_model()
     if mdl is None:
         raise ValueError("Modèle IA non disponible. Veuillez contacter l'administrateur.")
     arr = preprocess_image(image_bytes)
     pred = mdl.predict(arr)[0][0]
+    # Log mémoire après prédiction
+    mem = process.memory_info().rss / (1024 * 1024)
+    print(f"🔎 Mémoire utilisée après prédiction : {mem:.2f} Mo")
     return float(pred)
