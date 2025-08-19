@@ -13,3 +13,4 @@ djangorestframework-simplejwt
 numpy==2.1.3
 tensorflow==2.19.0
 Pillow>=8.0.0
+psutil
