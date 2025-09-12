@@ -1,0 +1,65 @@
+Ce document PDF est une synthèse comparative des hébergeurs pour le projet DetectionCancer. Il reprend l'étude détaillée du fichier Markdown, avec tableau, analyse, recommandations et conversion des prix en XOF.
+
+Pour la version PDF, le contenu est identique à celui du fichier Markdown, mis en page pour une lecture professionnelle.
+
+Si tu veux une version visuelle (tableaux, couleurs, etc.), il est conseillé d'utiliser un outil comme Pandoc ou un convertisseur Markdown vers PDF.
+
+---
+
+# Étude comparative des hébergeurs pour DetectionCancer
+
+## 1. Hébergeurs analysés
+- Render (CPU)
+- Vercel (CPU)
+- Heroku (CPU)
+- Paperspace (GPU/CPU)
+- Lambda Labs (GPU/CPU)
+- Vast.ai (GPU/CPU)
+- Google Cloud Platform (GCP, GPU/CPU)
+- AWS EC2 (GPU/CPU)
+
+## 2. Critères de comparaison
+- Prix (XOF)
+- Rapidité (CPU/GPU, performance)
+- Sécurité (certifications, backup, isolation)
+- Auto-déploiement GitHub (CI/CD)
+
+## 3. Tableau comparatif
+
+| Hébergeur      | Type      | Prix/h (XOF) | GPU dispo | Rapidité | Sécurité | Auto-deploy GitHub |
+|---------------|-----------|--------------|-----------|----------|----------|--------------------|
+| Render        | CPU       | Gratuit/600  | Non       | Bonne    | Bonne    | Oui                |
+| Vercel        | CPU       | Gratuit/600  | Non       | Bonne    | Bonne    | Oui                |
+| Heroku        | CPU       | Gratuit/600  | Non       | Moyenne  | Bonne    | Oui                |
+| Paperspace    | GPU/CPU   | 240-600      | Oui       | Excellente| Très bonne| Oui                |
+| Lambda Labs   | GPU/CPU   | 300-900      | Oui       | Excellente| Très bonne| Oui                |
+| Vast.ai       | GPU/CPU   | 120-600      | Oui       | Variable | Variable | Oui                |
+| GCP           | GPU/CPU   | 360-1200     | Oui       | Excellente| Très bonne| Oui                |
+| AWS EC2       | GPU/CPU   | 480-1500     | Oui       | Excellente| Très bonne| Oui                |
+
+## 4. Détails par hébergeur
+
+... (voir Markdown pour le détail complet)
+
+## 5. Recommandation pour DetectionCancer
+
+- Pour un projet ML/API avec besoin GPU, déploiement backend + frontend, auto-deploy GitHub, coût maîtrisé :
+  - Paperspace est le meilleur compromis
+  - Lambda Labs est aussi très adapté
+  - Vast.ai est le moins cher, mais la qualité dépend du fournisseur
+- Si le GPU n’est pas indispensable : Render ou Vercel sont parfaits
+
+## 6. Conclusion
+
+- Meilleur choix pour DetectionCancer (besoin ML, API, auto-deploy, coût maîtrisé) :
+  - Paperspace
+- Pour un projet sans GPU : Render ou Vercel
+
+## 7. Sources
+- https://www.paperspace.com
+- https://www.lambdalabs.com
+- https://vast.ai
+- https://render.com
+- https://vercel.com
+- https://cloud.google.com
+- https://aws.amazon.com
