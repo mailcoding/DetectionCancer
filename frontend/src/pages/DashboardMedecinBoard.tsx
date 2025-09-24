@@ -35,7 +35,14 @@ const DashboardMedecinBoard: React.FC = () => {
   // Statistiques
   const nbExamens = images.length;
   const nbUrgents = urgentCases.length;
-  const precisionIA = images.length ? (images.map(i => i.analysis_result.malignancy_score).reduce((a, b) => a + b, 0) / images.length * 100).toFixed(1) : '0';
+  // Calculs IA détaillés
+  const malignancyScores = images.map(i => i.analysis_result.malignancy_score);
+  const precisionIA = malignancyScores.length ? (malignancyScores.reduce((a, b) => a + b, 0) / malignancyScores.length * 100).toFixed(1) : '0';
+  const maxScore = malignancyScores.length ? Math.max(...malignancyScores) : 0;
+  const minScore = malignancyScores.length ? Math.min(...malignancyScores) : 0;
+  const avgScore = precisionIA;
+  // Dernier résultat IA (si dispo)
+  const lastPrediction = images.length ? images[images.length-1].analysis_result : null;
 
   // Préparation des données pour le graphique de charge (examens/jour)
   const examsByDay = images.reduce((acc, img) => {
@@ -59,7 +66,17 @@ const DashboardMedecinBoard: React.FC = () => {
       <div className="stats-bar">
         <div className="stat-box">{nbExamens} examens ce mois</div>
         <div className="stat-box urgent">{nbUrgents} urgents</div>
-        <div className="stat-box">{precisionIA}% précision IA</div>
+        <div className="stat-box">Précision IA moyenne : {avgScore}%</div>
+        <div className="stat-box">Score IA max : {(maxScore*100).toFixed(1)}%</div>
+        <div className="stat-box">Score IA min : {(minScore*100).toFixed(1)}%</div>
+        {lastPrediction && (
+          <div className="stat-box prediction-details">
+            <div><b>Dernière prédiction IA</b></div>
+            <div>Score : {(lastPrediction.malignancy_score*100).toFixed(1)}%</div>
+            <div>Findings : {lastPrediction.findings.join(', ')}</div>
+            {lastPrediction.birads && <div>BI-RADS : {lastPrediction.birads}</div>}
+          </div>
+        )}
       </div>
       <div className="board-main-content">
         <div className="charts">
