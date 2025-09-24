@@ -273,6 +273,32 @@ graph TD
 
 ---
 
+## 16. Comparatif des hébergeurs (CPU/GPU)
+
+Pour choisir l’hébergement le plus adapté à DetectionCancer, consultez le document détaillé :
+
+- [Comparatif_Hebergeurs_DetectionCancer.pdf](./Comparatif_Hebergeurs_DetectionCancer.pdf)
+- [Comparatif_Hebergeurs_DetectionCancer.md](./Comparatif_Hebergeurs_DetectionCancer.md)
+
+### Synthèse rapide
+
+| Hébergeur   | Type    | Prix/h (XOF) | GPU dispo | Rapidité   | Sécurité   | Auto-deploy GitHub |
+| ----------- | ------- | ------------ | --------- | ---------- | ---------- | ------------------ |
+| Render      | CPU     | Gratuit/600  | Non       | Bonne      | Bonne      | Oui                |
+| Vercel      | CPU     | Gratuit/600  | Non       | Bonne      | Bonne      | Oui                |
+| Paperspace  | GPU/CPU | 240-600      | Oui       | Excellente | Très bonne | Oui                |
+| Lambda Labs | GPU/CPU | 300-900      | Oui       | Excellente | Très bonne | Oui                |
+| Vast.ai     | GPU/CPU | 120-600      | Oui       | Variable   | Variable   | Oui                |
+
+**Recommandation :**
+
+- Pour un projet ML/API avec GPU : Paperspace est le meilleur compromis (prix, rapidité, sécurité, auto-déploiement GitHub)
+- Pour un projet sans GPU : Render ou Vercel sont parfaits
+
+Pour plus de détails, consultez le PDF ou le Markdown dans le dossier `docs`.
+
+---
+
 ## 15. Ressources complémentaires
 
 - [Documentation Django](https://docs.djangoproject.com/fr/)
